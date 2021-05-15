@@ -1,4 +1,6 @@
+# %%
 import re
+
 import pandas as pd
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
@@ -21,6 +23,9 @@ print("Read %d labeled train reviews, %d labeled test reviews, "
 # 导入各种模块进行字符串清理
 
 def review_to_wordlist(review, remove_stopwords=False):
+    # 是否移除停止词由remove_stopwords决定，
+    # 本函数主要考虑移除HTML标识和非字母元素
+
     # 函数将评论转换为单词序列，可选择删除停止词。返回单词列表。
 
     # 1. Remove HTML
@@ -74,6 +79,7 @@ def review_to_sentences(review, tokenizer, remove_stopwords=False):
 # %%
 sentences = []  # Initialize an empty list of sentences
 # 将未标记和标记的训练集都加入了训练
+# 下面两个for循环将评论分成句子
 print("Parsing sentences from training set")
 for review in train["review"]:
     sentences += review_to_sentences(review, tokenizer)
@@ -124,7 +130,25 @@ model = Word2Vec.load("300features_40minwords_10context")
 print(type(model.wv.vectors))
 print(model.wv.vectors.shape)
 
+# %%
+import numpy as np  # Make sure that numpy is imported
 
+print("Read %d labeled train reviews, %d labeled test reviews, " \
+      "and %d unlabeled reviews\n" % (train["review"].size,
+                                      test["review"].size, unlabeled_train["review"].size))
+
+num_features = 300  # 300个特征
+
+clean_train_reviews = []
+for review in train["review"]:
+    clean_train_reviews.append(review_to_wordlist(review, remove_stopwords=True))
+print("Creating average feature vecs for test reviews")
+
+clean_test_reviews = []
+for review in test["review"]:
+    clean_test_reviews.append(review_to_wordlist(review, remove_stopwords=True))
+
+# %%
 from sklearn.cluster import KMeans
 import time
 
@@ -145,14 +169,9 @@ idx = kmeans_clustering.fit_predict(word_vectors)
 end = time.time()
 elapsed = end - start
 print("Time taken for K Means clustering: ", elapsed, "seconds.")
-# %%
 
-output = pd.DataFrame(data={"words": idx})
-output.to_csv("k-means-result")
-# %%
-# Create a Word / Index dictionary, mapping each vocabulary word to
-# a cluster number
-word_centroid_map = dict(zip(model.wv.index2word, idx))  # 将得到的聚类结合单词得到每个单词的聚类zip之后成为元组再转化为dict
+word_centroid_map = dict(zip(model.wv.index2word, idx))
+# 将得到的聚类结合单词得到每个单词的聚类zip之后成为元组再转化为dict
 # %%
 # For the first 10 clusters
 for cluster in range(0, 10):
@@ -210,6 +229,8 @@ for review in clean_test_reviews:
     test_centroids[counter] = create_bag_of_centroids(review, word_centroid_map)
     counter += 1
 # Fit a random forest and extract predictions
+from sklearn.ensemble import RandomForestClassifier
+
 forest = RandomForestClassifier(n_estimators=100)
 
 # Fitting the forest may take a few minutes

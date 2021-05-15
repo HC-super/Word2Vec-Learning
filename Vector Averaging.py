@@ -135,6 +135,7 @@ import numpy as np  # Make sure that numpy is imported
 
 def makeFeatureVec(words, model, num_features):
     # 对单个的评论进行平均向量化
+    # 所谓单个评论的平均向量化是指在word2vec中生成的对应每个单词的向量后，在传入的单个评论中将所有单词的向量相加再平均
     featureVec = np.zeros((num_features,), dtype="float32")
     #
     nwords = 0.

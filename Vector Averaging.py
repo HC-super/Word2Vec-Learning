@@ -22,6 +22,9 @@ print("Read %d labeled train reviews, %d labeled test reviews, "
 # 导入各种模块进行字符串清理
 
 def review_to_wordlist(review, remove_stopwords=False):
+    # 是否移除停止词由remove_stopwords决定，
+    # 本函数主要考虑移除HTML标识和非字母元素
+
     # 函数将评论转换为单词序列，可选择删除停止词。返回单词列表。
 
     # 1. Remove HTML
@@ -75,6 +78,7 @@ def review_to_sentences(review, tokenizer, remove_stopwords=False):
 # %%
 sentences = []  # Initialize an empty list of sentences
 # 将未标记和标记的训练集都加入了训练
+# 下面两个for循环将评论分成句子
 print("Parsing sentences from training set")
 for review in train["review"]:
     sentences += review_to_sentences(review, tokenizer)
@@ -129,7 +133,8 @@ print(model.wv.vectors.shape)
 import numpy as np  # Make sure that numpy is imported
 
 
-def makeFeatureVec(words, model, num_features):  # 对单个的评论进行平均向量化
+def makeFeatureVec(words, model, num_features):
+    # 对单个的评论进行平均向量化
     featureVec = np.zeros((num_features,), dtype="float32")
     #
     nwords = 0.
@@ -142,7 +147,7 @@ def makeFeatureVec(words, model, num_features):  # 对单个的评论进行平�
     # 在评论中循环每个单词，如果它在模型的词汇表中，则将其特征向量添加到总数中
     for word in words:
         if word in index2word_set:
-            nwords = nwords + 1.
+            nwords = nwords + 1. # 如果单词在index2word的集合中，那么将nwords+1
             featureVec = np.add(featureVec, model[word])
 
     #
@@ -151,36 +156,20 @@ def makeFeatureVec(words, model, num_features):  # 对单个的评论进行平�
     return featureVec
 
 
-def getAvgFeatureVecs(reviews, model, num_features): # 对评论集中的所有评论进行平均向量化
-    # Given a set of reviews (each one a list of words), calculate
-    # the average feature vector for each one and return a 2D numpy array
-    #
-    # Initialize a counter
+def getAvgFeatureVecs(reviews, model, num_features):
+    # 对评论集中的所有评论进行平均向量化
     counter = 0
-    #
-    # Preallocate a 2D numpy array, for speed
     reviewFeatureVecs = np.zeros((len(reviews), num_features), dtype="float32")
-    #
-    # Loop through the reviews
     for review in reviews:
-        #
-        # Print a status message every 1000th review
+
         if counter % 1000 == 0:
             print("Review %d of %d" % (counter, len(reviews)))
-        #
-        # Call the function (defined above) that makes average feature vectors
         reviewFeatureVecs[counter] = makeFeatureVec(review, model,
                                                     num_features)
-        #
-        # Increment the counter
         counter = counter + 1
     return reviewFeatureVecs
 
 
-# ****************************************************************
-# Calculate average feature vectors for training and testing sets,
-# using the functions we defined above. Notice that we now use stop word
-# removal.
 import pandas as pd
 
 # Read data from files
@@ -191,10 +180,7 @@ print("Read %d labeled train reviews, %d labeled test reviews, " \
       "and %d unlabeled reviews\n" % (train["review"].size,
                                       test["review"].size, unlabeled_train["review"].size))
 
-# Import various modules for string cleaning
-
-# Download the punkt tokenizer for sentence splitting
-num_features = 300  # Word vector dimensionality
+num_features = 300  #300个特征
 
 clean_train_reviews = []
 for review in train["review"]:

@@ -1,26 +1,27 @@
 # max len = 56
-from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import print_function
 
+import logging
 import os
 import sys
-import logging
-import pickle
+
 import numpy as np
 import pandas as pd
-
-import tensorflow as tf
 from tensorflow import keras
+
+import pickle
 
 batch_size = 100
 nb_epoch = 1
 hidden_dim = 120
 
-kernel_size = 3
-nb_filter = 60
+kernel_size = 3  # 卷积核大小
+nb_filter = 60  # 卷积核个数
 
-test = pd.read_csv("./corpus/imdb/testData.tsv", header=0,
-    delimiter="\t", quoting=3)
+test = pd.read_csv("corpus/imdb/testData.tsv", header=0,
+                   delimiter="\t", quoting=3)
+
 
 def get_idx_from_sent(sent, word_idx_map):
     """
@@ -35,6 +36,7 @@ def get_idx_from_sent(sent, word_idx_map):
             x.append(1)
 
     return x
+
 
 def make_idx_data(revs, word_idx_map, maxlen=60):
     """
@@ -68,7 +70,7 @@ def make_idx_data(revs, word_idx_map, maxlen=60):
 if __name__ == '__main__':
     program = os.path.basename(sys.argv[0])
     logger = logging.getLogger(program)
-    
+
     logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s')
     logging.root.setLevel(level=logging.INFO)
     logger.info(r"running %s" % ''.join(sys.argv))
@@ -78,58 +80,70 @@ if __name__ == '__main__':
     # pickle_file = sys.argv[1]
     pickle_file = os.path.join('pickle', 'imdb_train_val_test.pickle3')
 
-    revs, W, word_idx_map, vocab, maxlen = pickle.load(open(pickle_file, 'rb'))
+    revs, W, word_idx_map, vocab, maxlen = pickle.load(open(pickle_file, 'rb'))  # 读取二进制文件
+    # revs 为评论集合，W为74402*300的numpy词向量矩阵，word_idx_map为单词索引，vocab为单词出现次数，maxlen为1416
     logging.info('data loaded!')
 
     X_train, X_test, X_dev, y_train, y_dev = make_idx_data(revs, word_idx_map, maxlen=maxlen)
 
-    n_train_sample = X_train.shape[0]
+    n_train_sample = X_train.shape[0] #20072
     logging.info("n_train_sample [n_train_sample]: %d" % n_train_sample)
 
-    n_test_sample = X_test.shape[0]
+    n_test_sample = X_test.shape[0] #25000
     logging.info("n_test_sample [n_train_sample]: %d" % n_test_sample)
 
-    len_sentence = X_train.shape[1]     # 200
+    len_sentence = X_train.shape[1]  # 1416
     logging.info("len_sentence [len_sentence]: %d" % len_sentence)
 
-    max_features = W.shape[0]
+    max_features = W.shape[0] #77402
     logging.info("num of word vector [max_features]: %d" % max_features)
 
-    num_features = W.shape[1]               # 400
+    num_features = W.shape[1]  # 300
     logging.info("dimension of word vector [num_features]: %d" % num_features)
 
     # Keras Model
     # this is the placeholder tensor for the input sequence
-    sequence = keras.layers.Input(shape=(maxlen, ), dtype='int32')
+    sequence = keras.layers.Input(shape=(maxlen,), dtype='int32')  # 输入
 
-    embedded = keras.layers.Embedding(input_dim=max_features, output_dim=num_features, input_length=maxlen, weights=[W], trainable=False) (sequence)
-    embedded = keras.layers.Dropout(0.25) (embedded)
+    embedded = keras.layers.Embedding(input_dim=max_features, output_dim=num_features,
+                                      # input_dim 词典中的词语个数，output_dim词向量的个数
+                                      input_length=maxlen, weights=[W], trainable=False)(sequence)
+
+    embedded = keras.layers.Dropout(0.25)(embedded)
+    # Dropout 包括在训练中每次更新时，
+    # 将输入单元的按比率随机设置为 0，
+    # 这有助于防止过拟合。
 
     # convolutional layer
-    convolution = keras.layers.Convolution1D(filters=nb_filter,
-                            kernel_size=kernel_size,
-                            padding='valid',
-                            activation='relu',
-                            strides=1
-                            ) (embedded)
+    convolution = keras.layers.Convolution1D(filters=nb_filter,  # 卷积核  一维卷积
+                                             kernel_size=kernel_size,  # 卷积核大小
+                                             padding='valid',  # padding填充
+                                             activation='relu',  # 激活函数
+                                             strides=1  # 步长
+                                             )(embedded)
 
-    maxpooling = keras.layers.MaxPooling1D(pool_size=2) (convolution)
-    maxpooling = keras.layers.Flatten() (maxpooling)
+    maxpooling = keras.layers.MaxPooling1D(pool_size=2)(convolution)  # 池化窗口大小
+    maxpooling = keras.layers.Flatten()(maxpooling)  # 展平一个张量
 
     # We add a vanilla hidden layer:
-    dense = keras.layers.Dense(70) (maxpooling)    # best: 120
-    dense = keras.layers.Dropout(0.25) (dense)    # best: 0.25
-    dense = keras.layers.Activation('relu') (dense)
+    dense = keras.layers.Dense(70)(maxpooling)  # best: 120  #dense为全链接层
+    dense = keras.layers.Dropout(0.25)(dense)  # best: 0.25 # 有效防止过拟合
 
-    output = keras.layers.Dense(2, activation='softmax') (dense)
+    dense = keras.layers.Activation('relu')(dense)
+    # relu激活函数
+    # 将激活函数应用于输出。
+
+    output = keras.layers.Dense(2, activation='softmax')(dense)
     model = keras.Model(inputs=sequence, outputs=output)
 
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+    # categorical_crossentropy 输出张量与目标张量之间的分类交叉熵。
+    # Adam 优化器。
+    # 评价函数用于评估当前训练模型的性能。当模型编译后（compile），评价函数应该作为 metrics 的参数来输入。
 
     model.fit(X_train, y_train, validation_data=[X_dev, y_dev], batch_size=batch_size, epochs=nb_epoch)
     y_pred = model.predict(X_test, batch_size=batch_size)
     y_pred = np.argmax(y_pred, axis=1)
-
 
     result_output = pd.DataFrame(data={"id": test["id"], "sentiment": y_pred})
 

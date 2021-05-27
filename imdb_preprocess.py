@@ -61,10 +61,10 @@ def build_data_train_test(data_train, data_test, train_ratio=0.8):
         words = set(orig_rev.split())
         for word in words:  # 如果单词在评论中则vocab对应单词value+1
             vocab[word] += 1
-        datum = {'y': y,
+        datum = {'y': y,  # 所对应的train_label情感
                  'text': orig_rev,
                  'num_words': len(orig_rev.split()),
-                 'split': int(np.random.rand() < train_ratio)}
+                 'split': int(np.random.rand() < train_ratio)}  # 将一部分数据转化为验证集
         revs.append(datum)
 
     for i in range(len(data_test)):

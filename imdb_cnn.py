@@ -8,6 +8,7 @@ import sys
 
 import numpy as np
 import pandas as pd
+from keras.layers import Embedding, Dropout, Convolution1D, MaxPooling1D, Flatten, Dense, Activation
 from tensorflow import keras
 
 import pickle
@@ -64,7 +65,7 @@ def make_idx_data(revs, word_idx_map, maxlen=60):
     y_dev = keras.utils.to_categorical(np.array(y_dev))
     # y_valid = np.array(y_valid)
 
-    return [X_train, X_test, X_dev, y_train, y_dev]
+    return [X_train, X_test, X_dev, y_train, y_dev]  # dev为验证集
 
 
 if __name__ == '__main__':
@@ -86,16 +87,16 @@ if __name__ == '__main__':
 
     X_train, X_test, X_dev, y_train, y_dev = make_idx_data(revs, word_idx_map, maxlen=maxlen)
 
-    n_train_sample = X_train.shape[0] #20072
+    n_train_sample = X_train.shape[0]  # 20072
     logging.info("n_train_sample [n_train_sample]: %d" % n_train_sample)
 
-    n_test_sample = X_test.shape[0] #25000
+    n_test_sample = X_test.shape[0]  # 25000
     logging.info("n_test_sample [n_train_sample]: %d" % n_test_sample)
 
     len_sentence = X_train.shape[1]  # 1416
     logging.info("len_sentence [len_sentence]: %d" % len_sentence)
 
-    max_features = W.shape[0] #77402
+    max_features = W.shape[0]  # 77402
     logging.info("num of word vector [max_features]: %d" % max_features)
 
     num_features = W.shape[1]  # 300
@@ -104,44 +105,48 @@ if __name__ == '__main__':
     # Keras Model
     # this is the placeholder tensor for the input sequence
     sequence = keras.layers.Input(shape=(maxlen,), dtype='int32')  # 输入
+    model = sequence()
 
-    embedded = keras.layers.Embedding(input_dim=max_features, output_dim=num_features,
-                                      # input_dim 词典中的词语个数，output_dim词向量的个数
-                                      input_length=maxlen, weights=[W], trainable=False)(sequence)
+    model.add(Embedding(input_dim=max_features, output_dim=num_features,
+                                      # input_dim 词典中的词语个数，output_dim词向量的维数
+                                      input_length=maxlen, weights=[W], trainable=False))
 
-    embedded = keras.layers.Dropout(0.25)(embedded)
+    model.add(Dropout(0.25))
     # Dropout 包括在训练中每次更新时，
     # 将输入单元的按比率随机设置为 0，
     # 这有助于防止过拟合。
 
     # convolutional layer
-    convolution = keras.layers.Convolution1D(filters=nb_filter,  # 卷积核  一维卷积
+    model.add(Convolution1D(filters=nb_filter,  # 卷积核  一维卷积
                                              kernel_size=kernel_size,  # 卷积核大小
                                              padding='valid',  # padding填充
                                              activation='relu',  # 激活函数
                                              strides=1  # 步长
-                                             )(embedded)
+                                             ))
 
-    maxpooling = keras.layers.MaxPooling1D(pool_size=2)(convolution)  # 池化窗口大小
-    maxpooling = keras.layers.Flatten()(maxpooling)  # 展平一个张量
+    model.add(MaxPooling1D(pool_size=2))  # 池化窗口大小
+    model.add(Flatten())  # 展平一个张量
 
     # We add a vanilla hidden layer:
-    dense = keras.layers.Dense(70)(maxpooling)  # best: 120  #dense为全链接层
-    dense = keras.layers.Dropout(0.25)(dense)  # best: 0.25 # 有效防止过拟合
+    model.add(Dense(70)) # best: 120  #dense为全链接层
+    model.add(Dropout(0.25)) # best: 0.25 # 有效防止过拟合
 
-    dense = keras.layers.Activation('relu')(dense)
+    model.add(Activation('relu'))
     # relu激活函数
     # 将激活函数应用于输出。
 
-    output = keras.layers.Dense(2, activation='softmax')(dense)
-    model = keras.Model(inputs=sequence, outputs=output)
+    model.add(Dense(2, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
     # categorical_crossentropy 输出张量与目标张量之间的分类交叉熵。
     # Adam 优化器。
     # 评价函数用于评估当前训练模型的性能。当模型编译后（compile），评价函数应该作为 metrics 的参数来输入。
+    print('plot model...')
+    from keras.utils import plot_model
+    plot_model(model, to_file='modellstmsigmoid.png')
 
     model.fit(X_train, y_train, validation_data=[X_dev, y_dev], batch_size=batch_size, epochs=nb_epoch)
+
     y_pred = model.predict(X_test, batch_size=batch_size)
     y_pred = np.argmax(y_pred, axis=1)
 

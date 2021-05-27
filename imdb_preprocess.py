@@ -7,6 +7,7 @@ import re
 import sys
 from collections import defaultdict
 
+
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -22,6 +23,8 @@ train = pd.read_csv("corpus/imdb/labeledTrainData.tsv", header=0,
                     delimiter="\t", quoting=3)
 test = pd.read_csv("corpus/imdb/testData.tsv", header=0,
                    delimiter="\t", quoting=3)
+unlabeled_train = pd.read_csv("corpus/imdb/unlabeledTrainData.tsv", header=0,
+                              delimiter="\t", quoting=3)
 
 
 def review_to_wordlist(review, remove_stopwords=False):
@@ -50,8 +53,8 @@ def build_data_train_test(data_train, data_test, train_ratio=0.8):
     """
     Loads data and process data into index
     """
-    revs = []  # 所有评论及对应情感标记（0，1）组成评论的单词数和split所组成的字典的列表（list）
-    vocab = defaultdict(float)  # 评论中的所有单词出现的频次浮点型（字典）
+    revs = []
+    vocab = defaultdict(float)
 
     # Pre-process train data set
     for i in range(len(data_train)):
@@ -59,12 +62,12 @@ def build_data_train_test(data_train, data_test, train_ratio=0.8):
         y = train['sentiment'][i]
         orig_rev = ' '.join(rev).lower()
         words = set(orig_rev.split())
-        for word in words:  # 如果单词在评论中则vocab对应单词value+1
+        for word in words:
             vocab[word] += 1
         datum = {'y': y,  # 所对应的train_label情感
                  'text': orig_rev,
                  'num_words': len(orig_rev.split()),
-                 'split': int(np.random.rand() < train_ratio)}  # 将一部分数据转化为验证集
+                 'split': int(np.random.rand() < train_ratio)}  # 将一部分数据转化为测试集
         revs.append(datum)
 
     for i in range(len(data_test)):
@@ -97,7 +100,7 @@ def load_bin_vec(model, vocab):
     return word_vecs
 
 
-def get_W(word_vecs, k=300):  # 词向量和维度
+def get_W(word_vecs, k=300):
     vocab_size = len(word_vecs)
     word_idx_map = dict()
 
@@ -143,7 +146,7 @@ if __name__ == '__main__':
     # model = gensim.models.KeyedVectors.load_word2vec_format(model_file, binary=True)
 
     # 输入文件
-    glove_file = datapath("/Users/hanchao/Downloads/glove.840B.300d.txt")
+    glove_file = datapath("C:/Users/10798/Desktop/imdb/glove.840B.300d.txt")
     # 输出文件
     tmp_file = get_tmpfile('test_word2vec.txt')
 

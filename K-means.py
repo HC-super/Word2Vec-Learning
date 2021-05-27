@@ -20,7 +20,7 @@ print("Read %d labeled train reviews, %d labeled test reviews, "
 
 
 # %%
-# 导入各种模块进行字符串清理
+# 对评论进行处理
 
 def review_to_wordlist(review, remove_stopwords=False):
     # 是否移除停止词由remove_stopwords决定，
@@ -230,7 +230,7 @@ for review in clean_test_reviews:
     counter += 1
 # Fit a random forest and extract predictions
 from sklearn.ensemble import RandomForestClassifier
-
+# 用随机森林将文本进行分类，使用100个决策树
 forest = RandomForestClassifier(n_estimators=100)
 
 # Fitting the forest may take a few minutes

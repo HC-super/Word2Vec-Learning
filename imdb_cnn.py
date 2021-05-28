@@ -12,12 +12,12 @@ from keras import Sequential
 from keras.layers import Embedding, Dropout, Convolution1D, MaxPooling1D, Flatten, Dense, Activation
 from matplotlib import pyplot as plt
 from tensorflow import keras
-
+from keras.utils import plot_model
 import pickle
 
-batch_size = 32
-nb_epoch = 10
-hidden_dim = 128
+batch_size = 32  # 每次梯度更新的样本数。
+nb_epoch = 10  # 迭代次数
+hidden_dim = 128  # 隐层单元个数
 
 kernel_size = 3  # 卷积核大小
 nb_filter = 60  # 卷积核个数
@@ -71,7 +71,6 @@ def make_idx_data(revs, word_idx_map, maxlen=60):
 
 
 if __name__ == '__main__':
-
     program = os.path.basename(sys.argv[0])
     logger = logging.getLogger(program)
 
@@ -111,32 +110,28 @@ if __name__ == '__main__':
     model = Sequential()
 
     model.add(Embedding(input_dim=max_features, output_dim=num_features,
-                                      # input_dim 词典中的词语个数，output_dim词向量的维数
-                                      input_length=maxlen, weights=[W], trainable=False))
+                        # input_dim 词典中的词语个数，output_dim词向量的维数
+                        input_length=maxlen, weights=[W], trainable=False))
 
     model.add(Dropout(0.25))
     # Dropout 包括在训练中每次更新时，
     # 将输入单元的按比率随机设置为 0，
     # 这有助于防止过拟合。
 
-    # convolutional layer
-    model.add(Convolution1D(filters=nb_filter,  # 卷积核  一维卷积
-                                             kernel_size=kernel_size,  # 卷积核大小
-                                             padding='valid',  # padding填充
-                                             activation='relu',  # 激活函数
-                                             strides=1  # 步长
-                                             ))
+    # convolutional layer 卷积层
+    model.add(Convolution1D(filters=nb_filter,  # 卷积核数量  一维卷积
+                            kernel_size=kernel_size,  # 卷积核大小
+                            padding='valid',  # padding不填充
+                            activation='relu',  # rulu激活函数
+                            strides=1  # 步长
+                            ))
 
-    model.add(MaxPooling1D(pool_size=2))  # 池化窗口大小
+    model.add(MaxPooling1D(pool_size=2))  # 使用最大池化
     model.add(Flatten())  # 展平一个张量
 
     # We add a vanilla hidden layer:
-    model.add(Dense(70)) # best: 120  #dense为全链接层
-    model.add(Dropout(0.25)) # best: 0.25 # 有效防止过拟合
-
-    model.add(Activation('relu'))
-    # relu激活函数
-    # 将激活函数应用于输出。
+    model.add(Dense(120, activation='relu'))  # best: 120  #dense为全连接层神经元个数为70
+    model.add(Dropout(0.25))  # best: 0.25 # 有效防止过拟合
 
     model.add(Dense(2, activation='softmax'))
 
@@ -145,10 +140,11 @@ if __name__ == '__main__':
     # Adam 优化器。
     # 评价函数用于评估当前训练模型的性能。当模型编译后（compile），评价函数应该作为 metrics 的参数来输入。
     print('plot model...')
-    from keras.utils import plot_model
-    plot_model(model, to_file='modelcnnsigmoid.png')
 
-    history=model.fit(X_train, y_train, validation_data=[X_dev, y_dev], batch_size=batch_size, epochs=nb_epoch)
+    plot_model(model, to_file='imdb_cnn.png', show_shapes=True, show_layer_names=True)  # 网络可视化
+
+    history = model.fit(X_train, y_train, validation_data=[X_dev, y_dev], batch_size=batch_size,
+                        epochs=nb_epoch)  # 开始训练
 
     y_pred = model.predict(X_test, batch_size=batch_size)
     y_pred = np.argmax(y_pred, axis=1)
@@ -157,7 +153,7 @@ if __name__ == '__main__':
 
     # Use pandas to write the comma-separated output file
     result_output.to_csv("./result/cnn.csv", index=False, quoting=3)
-    score, acc = model.evaluate(X_dev, y_dev,batch_size=batch_size)
+    score, acc = model.evaluate(X_dev, y_dev, batch_size=batch_size)
 
     print('Test score:', score)
     print('Test accuracy:', acc)

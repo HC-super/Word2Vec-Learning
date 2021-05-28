@@ -1,19 +1,17 @@
 # max len = 56
 from __future__ import print_function
 from __future__ import absolute_import
-import matplotlib as plt
 import os
 import sys
 import logging
 
 from keras.layers import Dropout, Embedding, LSTM, Dense
 import matplotlib.pyplot as plt
-
+from keras.utils import plot_model
 import pickle
 import numpy as np
 import pandas as pd
 
-import tensorflow as tf
 from tensorflow import keras
 from keras.models import Sequential
 
@@ -119,17 +117,17 @@ if __name__ == '__main__':
     # GRU
     # hidden = GRU(hidden_dim, recurrent_dropout=0.25) (embedded)
 
-    model.add(Dense(2, activation='sigmoid'))
+    model.add(Dense(2, activation='softmax'))
 
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
     print('plot model...')
-    from keras.utils import plot_model
 
-    plot_model(model, to_file='modellstmsigmoid.png')
+    plot_model(model, to_file='imdb_lstm.png', show_shapes=True, show_layer_names=True)  # 网络可视化
     print('Train...')
 
     history = model.fit(X_train, y_train, validation_data=[X_dev, y_dev], batch_size=batch_size, epochs=nb_epoch)
+
     y_pred = model.predict(X_test, batch_size=batch_size)
     y_pred = np.argmax(y_pred, axis=1)
 
@@ -139,7 +137,7 @@ if __name__ == '__main__':
     # result_output.to_csv("./result/bi-lstm.csv", index=False, quoting=3)
 
     result_output.to_csv("./result/lstm.csv", index=False, quoting=3)
-    score, acc = model.evaluate(X_dev, y_dev,batch_size=batch_size)
+    score, acc = model.evaluate(X_dev, y_dev, batch_size=batch_size)
 
     print('Test score:', score)
     print('Test accuracy:', acc)

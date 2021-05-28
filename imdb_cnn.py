@@ -8,14 +8,16 @@ import sys
 
 import numpy as np
 import pandas as pd
+from keras import Sequential
 from keras.layers import Embedding, Dropout, Convolution1D, MaxPooling1D, Flatten, Dense, Activation
+from matplotlib import pyplot as plt
 from tensorflow import keras
 
 import pickle
 
-batch_size = 100
-nb_epoch = 1
-hidden_dim = 120
+batch_size = 32
+nb_epoch = 10
+hidden_dim = 128
 
 kernel_size = 3  # 卷积核大小
 nb_filter = 60  # 卷积核个数
@@ -69,6 +71,7 @@ def make_idx_data(revs, word_idx_map, maxlen=60):
 
 
 if __name__ == '__main__':
+
     program = os.path.basename(sys.argv[0])
     logger = logging.getLogger(program)
 
@@ -104,8 +107,8 @@ if __name__ == '__main__':
 
     # Keras Model
     # this is the placeholder tensor for the input sequence
-    sequence = keras.layers.Input(shape=(maxlen,), dtype='int32')  # 输入
-    model = sequence()
+
+    model = Sequential()
 
     model.add(Embedding(input_dim=max_features, output_dim=num_features,
                                       # input_dim 词典中的词语个数，output_dim词向量的维数
@@ -143,9 +146,9 @@ if __name__ == '__main__':
     # 评价函数用于评估当前训练模型的性能。当模型编译后（compile），评价函数应该作为 metrics 的参数来输入。
     print('plot model...')
     from keras.utils import plot_model
-    plot_model(model, to_file='modellstmsigmoid.png')
+    plot_model(model, to_file='modelcnnsigmoid.png')
 
-    model.fit(X_train, y_train, validation_data=[X_dev, y_dev], batch_size=batch_size, epochs=nb_epoch)
+    history=model.fit(X_train, y_train, validation_data=[X_dev, y_dev], batch_size=batch_size, epochs=nb_epoch)
 
     y_pred = model.predict(X_test, batch_size=batch_size)
     y_pred = np.argmax(y_pred, axis=1)
@@ -154,3 +157,23 @@ if __name__ == '__main__':
 
     # Use pandas to write the comma-separated output file
     result_output.to_csv("./result/cnn.csv", index=False, quoting=3)
+    score, acc = model.evaluate(X_dev, y_dev,batch_size=batch_size)
+
+    print('Test score:', score)
+    print('Test accuracy:', acc)
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('Model accuracy')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc='upper left')
+    plt.show()
+
+    # 绘制训练 & 验证的损失值
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('Model loss')
+    plt.ylabel('Loss')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc='upper left')
+    plt.show()

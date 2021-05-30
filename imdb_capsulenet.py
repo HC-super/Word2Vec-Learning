@@ -106,8 +106,12 @@ if __name__ == '__main__':
     sequence_input= keras.layers.Input(shape=(maxlen, ), dtype='int32')
     embedded_sequences = keras.layers.Embedding(input_dim=max_features, output_dim=num_features, input_length=maxlen, weights=[W], trainable=False)(sequence_input)
     embedded_sequences = keras.layers.SpatialDropout1D(0.1)(embedded_sequences)
+    # 此版本的功能与 Dropout 相同，但它会丢弃整个 1D 的特征图而不是丢弃单个元素。如果特征图中相邻的帧是强相关的
+    # （通常是靠前的卷积层中的情况），那么常规的 dropout 将无法使激活正则化，且导致有效的学习速率降低。
+    # 在这种情况下，SpatialDropout1D 将有助于提高特征图之间的独立性，应该使用它来代替 Dropout。
     x = keras.layers.Bidirectional(keras.layers.GRU(64, return_sequences=True))(embedded_sequences)
     x = keras.layers.Bidirectional(keras.layers.GRU(64, return_sequences=True))(x)
+    # 双向循环RNN（GRU）
     capsule = Capsule(num_capsule=Num_capsule, dim_capsule=Dim_capsule, routings=Routings, share_weights=True)(x)
     # output_capsule = Lambda(lambda x: K.sqrt(K.sum(K.square(x), 2)))(capsule)
     capsule = keras.layers.Flatten()(capsule)

@@ -127,7 +127,7 @@ if __name__ == '__main__':
                             ))
 
     model.add(MaxPooling1D(pool_size=2))  # 使用最大池化
-    model.add(Flatten())  # 展平一个张量
+    model.add(Flatten())  # 展平一个张量后喂给全连接接神经网络
 
     # We add a vanilla hidden layer:
     model.add(Dense(120, activation='relu'))  # best: 120  #dense为全连接层神经元个数为70

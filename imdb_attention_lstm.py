@@ -1,3 +1,4 @@
+# max len = 56
 from __future__ import print_function
 from __future__ import absolute_import
 
@@ -5,9 +6,6 @@ import os
 import sys
 import logging
 
-from keras import Sequential
-from keras.layers import Embedding, SpatialDropout1D, Bidirectional, GRU, Flatten, Dropout, Dense
-from keras.utils import plot_model
 from matplotlib import pyplot as plt
 
 import pickle
@@ -17,13 +15,23 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 
-from Capsule_net import Capsule
+# from keras.models import Model
+# from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional, Input, RepeatVector, Permute, TimeDistributed
+# from keras.preprocessing import sequence
 
+# from keras.utils import np_utils
+
+from Attention_layer import AttentionM
+
+# maxlen = 56
 batch_size = 100
 nb_epoch = 10
 hidden_dim = 120
 
-test = pd.read_csv("corpus/imdb/testData.tsv", header=0,
+kernel_size = 3
+nb_filter = 60
+
+test = pd.read_csv("./corpus/imdb/testData.tsv", header=0,
                    delimiter="\t", quoting=3)
 
 
@@ -104,25 +112,36 @@ if __name__ == '__main__':
     num_features = W.shape[1]  # 400
     logging.info("dimension of word vector [num_features]: %d" % num_features)
 
-    Routings = 5
-    Num_capsule = 10
-    Dim_capsule = 32
-
     # Keras Model
     # this is the placeholder tensor for the input sequence
-    sequence_input = keras.layers.Input(shape=(maxlen,), dtype='int32')
-    embedded_sequences = keras.layers.Embedding(input_dim=max_features, output_dim=num_features, input_length=maxlen,
-                                                weights=[W], trainable=False)(sequence_input)
-    embedded_sequences = keras.layers.SpatialDropout1D(0.1)(embedded_sequences)
-    x = keras.layers.Bidirectional(keras.layers.GRU(64, return_sequences=True))(embedded_sequences)
-    x = keras.layers.Bidirectional(keras.layers.GRU(64, return_sequences=True))(x)
-    capsule = Capsule(num_capsule=Num_capsule, dim_capsule=Dim_capsule, routings=Routings, share_weights=True)(x)
-    # output_capsule = Lambda(lambda x: K.sqrt(K.sum(K.square(x), 2)))(capsule)
-    capsule = keras.layers.Flatten()(capsule)
-    capsule = keras.layers.Dropout(0.1)(capsule)
-    output = keras.layers.Dense(2, activation='softmax')(capsule)
-    model = keras.Model(inputs=[sequence_input], outputs=output)
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    sequence = keras.layers.Input(shape=(maxlen,), dtype='int32')
+
+    embedded = keras.layers.Embedding(input_dim=max_features, output_dim=num_features, input_length=maxlen,
+                                      mask_zero=True, weights=[W], trainable=False)(sequence)
+    # embedded = Embedding(input_dim=max_features, output_dim=num_features, input_length=maxlen, weights=[W], trainable=False) (sequence)
+    embedded = keras.layers.Dropout(0.25)(embedded)
+
+    # bi-lstm
+    # enc = Bidirectional(LSTM(hidden_dim//2, recurrent_dropout=0.25, return_sequences=True)) (embedded)
+
+    # gru
+    enc = keras.layers.Bidirectional(keras.layers.GRU(hidden_dim // 2, recurrent_dropout=0.25, return_sequences=True))(
+        embedded)
+
+    att = AttentionM()(enc)
+
+    # print(enc.shape)
+    # print(att.shape)
+
+    fc1_dropout = keras.layers.Dropout(0.25)(att)
+    fc1 = keras.layers.Dense(50, activation="relu")(fc1_dropout)
+    fc2_dropout = keras.layers.Dropout(0.25)(fc1)
+
+    output = keras.layers.Dense(2, activation='softmax')(fc2_dropout)
+    model = keras.Model(inputs=sequence, outputs=output)
+
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+
     history = model.fit(X_train, y_train, validation_data=[X_dev, y_dev], batch_size=batch_size, epochs=nb_epoch)
     y_pred = model.predict(X_test, batch_size=batch_size)
     y_pred = np.argmax(y_pred, axis=1)
@@ -132,7 +151,7 @@ if __name__ == '__main__':
     # Use pandas to write the comma-separated output file
     # result_output.to_csv("./result/bi-lstm.csv", index=False, quoting=3)
 
-    result_output.to_csv("./result/capsule_lstm.csv", index=False, quoting=3)
+    result_output.to_csv("./result/attention-bi-lstm.csv", index=False, quoting=3)
     score, acc = model.evaluate(X_dev, y_dev, batch_size=batch_size)
 
     print('Test score:', score)

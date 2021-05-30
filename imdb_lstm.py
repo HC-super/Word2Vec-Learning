@@ -112,7 +112,7 @@ if __name__ == '__main__':
     model.add(Dropout(0.25))
 
     # LSTM
-    model.add(LSTM(hidden_dim, dropout=0.2, recurrent_dropout=0.25))
+    model.add(LSTM(hidden_dim, dropout=0.2, recurrent_dropout=0.25))  # 长短期记忆网络LSTM
 
     # GRU
     # hidden = GRU(hidden_dim, recurrent_dropout=0.25) (embedded)

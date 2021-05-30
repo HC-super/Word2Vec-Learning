@@ -121,6 +121,9 @@ if __name__ == '__main__':
     # bi-directional GRU
     model.add(Bidirectional(GRU(hidden_dim // 2, recurrent_dropout=0.25)))
 
+    # 双向循环神经网络 (Bidirectional Recurrent Neural Network, Bi-RNN) 由两层循环神经网络组成,
+    # 它们的输入相同, 只是信息传递的方向不同
+
     model.add(Dense(2, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])

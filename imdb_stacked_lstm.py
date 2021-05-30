@@ -123,11 +123,11 @@ if __name__ == '__main__':
     # bi-directional LSTM
     model.add(Bidirectional(LSTM(hidden_dim // 2, recurrent_dropout=0.25, return_sequences=True)))
     model.add(Bidirectional(LSTM(hidden_dim // 2, recurrent_dropout=0.25)))
-
+    # 将多个LSTM堆叠
     # bi-directional GRU
     # hidden = Bidirectional(GRU(hidden_dim//2, returrent_dropout=0.25, return_sequences=True)) (embedded)
     # hidden = Bidirectional(GRU(hidden_dim//2, recurrent_dropout=0.25)) (hidden)
-
+    # 将多个GRU堆叠
     model.add(Dense(2, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])

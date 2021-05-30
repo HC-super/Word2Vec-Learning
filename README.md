@@ -23,3 +23,9 @@ For learning NLP！
 [bidirectional_lstm（双向循环神经网络）](https://github.com/HC-super/Word2Vec-Learning/blob/main/imdb_bidirectional_lstm.py)
 
 ![imdb_bidirectional_lstm](https://github.com/HC-super/Word2Vec-Learning/blob/main/imdb_bidirectional_lstm.png)
+## 其他模型
+
+[胶囊网络capsule](https://github.com/HC-super/Word2Vec-Learning/blob/main/imdb_capsulenet.py)
+
+[自注意力模型](https://github.com/HC-super/Word2Vec-Learning/blob/main/imdb_attention_lstm.py)
+

@@ -213,12 +213,6 @@ embedding 在深度学习中经常和manifold（流形）搭配使用
 
 激活函数——ReLU 函数：![img](https://bkimg.cdn.bcebos.com/formula/ae9d12662d9e1073200f081659ff7ea3.svg)线性整流作为神经元的激活函数，定义了该神经元在线性变换![img](https://bkimg.cdn.bcebos.com/formula/fb2b2510cb8c97bb4b8ee347317804a4.svg)之后的非线性输出结果。换言之，对于进入神经元的来自上一层神经网络的输入向量![img](https://bkimg.cdn.bcebos.com/formula/40482bf9a174030a55e50aa416fb29af.svg)，使用线性整流激活函数的神经元会输出![img](https://bkimg.cdn.bcebos.com/formula/24175eeaf4905a7acc3025fa7f3f660f.svg)至下一层神经元或作为整个神经网络的输出（取决现神经元在网络结构中所处位置）。
 
-```python
-model.compile(
- optimizer=’adam’, loss=’categorical_crossentropy’, metrics=[‘accuracy’]
-) #loss为分类交叉熵
-test_acc = model.evaluate(x_test, y_test, batch_size=batch_size) #评估生成的模型对于test的拟合效果
-```
 
 七层卷积神经网络（用于手写数字识别）
 

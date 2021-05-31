@@ -84,7 +84,8 @@ if __name__ == '__main__':
     pickle_file = os.path.join('pickle', 'imdb_train_val_test.pickle3')
 
     revs, W, word_idx_map, vocab, maxlen = pickle.load(open(pickle_file, 'rb'))  # 读取二进制文件
-    # revs 为评论集合，W为74402*300的numpy词向量矩阵，word_idx_map为单词索引，vocab为单词出现次数，maxlen为1416
+    # revs 为评论集合，W为74402*300的numpy词向量矩阵，word_idx_map为单词索引，vocab为单词出现次数，maxlen为最大评论长度1416
+    #之后会用maxlen作为所有句子的长度窗口进行送入神经网络
     logging.info('data loaded!')
 
     X_train, X_test, X_dev, y_train, y_dev = make_idx_data(revs, word_idx_map, maxlen=maxlen)

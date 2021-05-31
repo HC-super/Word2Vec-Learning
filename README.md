@@ -229,7 +229,7 @@ embedding 在深度学习中经常和manifold（流形）搭配使用
 
 ![image-20210523120856168](https://tva1.sinaimg.cn/large/008i3skNgy1gr1uuvaz3sj31jk0ss4mn.jpg) 
 
-LSTM（长短时循环）和GRU（门控单元）
+## LSTM（长短时循环）和GRU（门控单元）
 
 解决序列问题
 

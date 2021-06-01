@@ -2,7 +2,7 @@
 
 For learning NLP！
 
-### 部分代码的神经网络结构
+## 部分代码的神经网络结构
 
 [CNN](https://github.com/HC-super/Word2Vec-Learning/blob/main/imdb_lstm.py)
 
@@ -25,11 +25,29 @@ For learning NLP！
 ![imdb_bidirectional_lstm](https://github.com/HC-super/Word2Vec-Learning/blob/main/imdb_bidirectional_lstm.png)
 ## 其他模型
 
+[神经网络数据预处理](https://github.com/HC-super/Word2Vec-Learning/blob/main/imdb_preprocess.py)
+
 [胶囊网络capsule](https://github.com/HC-super/Word2Vec-Learning/blob/main/imdb_capsulenet.py)
 
 [自注意力模型](https://github.com/HC-super/Word2Vec-Learning/blob/main/imdb_attention_lstm.py)
 
-# 词向量
+[Tokenization](https://github.com/HC-super/Word2Vec-Learning/blob/main/Tokenization.py)
+
+[TF-IDF](https://github.com/HC-super/Word2Vec-Learning/blob/main/TfidfTransformer.py)
+
+[平均向量](https://github.com/HC-super/Word2Vec-Learning/blob/main/Vector%20Averaging.py)
+
+[K-means](https://github.com/HC-super/Word2Vec-Learning/blob/main/K-means.py)
+
+[TOC]
+
+# NLP learning
+
+## 词向量
+
+## Word2vec
+
+
 
 最简单的方法可以采用one-hot encoder用向量来表示取值和分类，若有4个值会取
 
@@ -59,7 +77,7 @@ print(ans)
 
 但是one-hot有几个缺点，首先它没有考虑词与词之间相似度的问题，有多少不同的词就会有多少维向量。这样词与词之间的相似度无法计算，其次，如果词太多会造成向量的维度过高。
 
-word2vec是谷歌开发的用于试图理解词之间情感和意义的工具，本质上是一种降维操作。工作方法类似于深层方法（Deep Approaches）如递归神经网络和深层神经网络，但它的计算效率更高。它可以利用**向量**来表示词与词之间的关系和相似度（余弦相似度），越有区分度的词越远离空间分为窗口词和中心词（前后文预测中间词skip-gram，中间词预测前后文CBOW）以计算词向量。
+word2vec是谷歌开发的用于试图理解词之间情感和意义的工具，也是一种相较于one-hot的降维操作。工作方法类似于深层方法（Deep Approaches）如递归神经网络和深层神经网络，但它的计算效率更高。它可以利用**向量**来表示词与词之间的关系和相似度（余弦相似度），越有区分度的词越远离空间分为窗口词和中心词（前后文预测中间词skip-gram，中间词预测前后文CBOW）以计算词向量。
 
 skip-gram（跳字模型）的网络结构如下：
 
@@ -77,7 +95,7 @@ CBOW是用上下文来预测这个词。网络结构如下
 
 > 统计学较深度学习更快
 
-倒排索引：通过对文章进行索引以便尽快找到相关文档，CBOW类似于完形填空。通过上下文来预测中心词。而我们通常会用skip-gram，因为其效果更好。
+> 倒排索引：通过对文章进行索引以便尽快找到相关文档，CBOW类似于完形填空。通过上下文来预测中心词。而我们通常会用skip-gram，因为其效果更好。
 
 词向量的几种典型应用：
 
@@ -143,7 +161,7 @@ sigmoid函数用于解决二分类问题，但会因饱和现象导致梯度消�
 
 较为常用，且斜率可选定（超参数）
 
-MLP（Multi-layer Perceptron）Dense net 密集连接 
+MLP（Multi-layer Perceptron）Densenet 密集连接 
 
 神经网络：多个线性决策边界的叠加➡️非线性决策边界
 
@@ -179,9 +197,7 @@ CS224 NLP
 
 ![image-20210531154827929](https://tva1.sinaimg.cn/large/008i3skNgy1gr1uty3rtuj30q00a0wg7.jpg)
 
-
-
-# CNN
+##  CNN
 
 称为卷积神经网络
 
@@ -203,7 +219,7 @@ embedding 在深度学习中经常和manifold（流形）搭配使用
 
 ![image-20210522103538598](https://tva1.sinaimg.cn/large/008i3skNgy1gr1uu15ircj31km0heh08.jpg)
 
-![image-20210522103633516](https://tva1.sinaimg.cn/large/008i3skNgy1gr1uu4423sj31xy0lw18t.jpg)
+![image-20210522103633516](https://tva1.sinaimg.cn/large/008i3skNgy1gr1vwc7n88j31xy0lwgor.jpg)
 
 ![image-20210522103725729](https://tva1.sinaimg.cn/large/008i3skNgy1gr1uu6h0hkj31sg0rqwqj.jpg)
 
@@ -213,8 +229,7 @@ embedding 在深度学习中经常和manifold（流形）搭配使用
 
 激活函数——ReLU 函数：![img](https://bkimg.cdn.bcebos.com/formula/ae9d12662d9e1073200f081659ff7ea3.svg)线性整流作为神经元的激活函数，定义了该神经元在线性变换![img](https://bkimg.cdn.bcebos.com/formula/fb2b2510cb8c97bb4b8ee347317804a4.svg)之后的非线性输出结果。换言之，对于进入神经元的来自上一层神经网络的输入向量![img](https://bkimg.cdn.bcebos.com/formula/40482bf9a174030a55e50aa416fb29af.svg)，使用线性整流激活函数的神经元会输出![img](https://bkimg.cdn.bcebos.com/formula/24175eeaf4905a7acc3025fa7f3f660f.svg)至下一层神经元或作为整个神经网络的输出（取决现神经元在网络结构中所处位置）。
 
-
-七层卷积神经网络（用于手写数字识别）
+七层卷积神经网络（用于手写数字识别)
 
 充分利用CNN的局部感受野，权值共享（每次卷积用同一个卷积核）、下采样的特点保证平移、缩放、变形的不变性
 
@@ -279,84 +294,11 @@ embedding 在深度学习中经常和manifold（流形）搭配使用
 
 
 
-
-
-
-
-## keras
-
-优化器（optimizer）
-
-常用：
-
-SGD：随机梯度下降
-
-momentum：动量优化，避免取得局部最优解
-
-AdaGrad：抑制陡峭方向上的梯度震荡
-
-激活函数：sigmoid➡️改进 hardsigmoid
-
-tanh 会有梯度消失的问题
-
-不同问题用不同的激活函数，一般常用的有：二分类sigmoid，多分类softmax，CV用relu，RNN和GAN用tanh
-
-回调函数来监控模型异常，用来查看模型内在状态和统计。
-
-CALL BACK
-
-常用数据集
-
-特征提取：不要全连接层，仅保留卷积层
-
-微调（fine-tuning）将原模型的全连接层换为自己的全连接层
-
-当要改动模型内部的卷积层时，优化器最好选用SGD并设置一个较低的学习率。
-
-keras模型对比中：
-
-TOP1:模型预测的第一个结果正确
-
-TOP5:模型预测的前5个结果包含正确结果
-
-Application模块很重要
-
-Word-net：知识图谱
-
-layer.tranable = False 将基模型的所有层都冻住，不许它们训练
-
-Inception:同一个输入进行分别4种处理后汇总输出给下一层
-
-正则化：防止过拟合如
-
-1. 数据增强：Data Augmentation（如对训练图像进行翻转和裁切）
-
-2. 早停
-3. Dropout随机掐死部分神经元
-
-kernel-regularizer 惩罚权重（常用）
-
-对w的平方和进行惩罚为L2正则项
-
-$|w|$为L1正则化
-
-bias_regularize 偏置项惩罚 是模型输入到输出尽可能一致
-
-activity_regularize 激活值惩罚输出尽可能小
-
-模型可视化：sci-kit learn的grid_search API来寻找最优超参数
-
-结构化机器学习
-
-keras.utils（utility常用的轮子）
-
-one-hot独热向量编码，利用向量来表示不同的类
-
 ## 自注意力模型
 
 Self-Attention
 
-on the relationship between SelfAttention and CNN<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr1upisvs0j30py0c83zm.jpg" alt="image-20210531182927927" style="zoom:33%;" />
+on the rellationship between SelfAttention and CNN<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr1upisvs0j30py0c83zm.jpg" alt="image-20210531182927927" style="zoom:33%;" />
 
 Self-Attention VS. RNN
 
@@ -364,13 +306,33 @@ RNN中的vector无法同时产生需传递
 
 Self-Attention中的vector可同时产生
 
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr1w78qfnlj30vo0nm49q.jpg" alt="image-20210531204118549" style="zoom:50%;" />
+
+文章：Attention is all you need
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr1w8optimj30v40n6tcg.jpg" alt="image-20210531204241513" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr1wa46zsqj60v40nkwl302.jpg" alt="image-20210531204404096" style="zoom:50%;" />
+
+这里不一定是softmax
+
+![image-20210531204646128](https://tva1.sinaimg.cn/large/008i3skNly1gr1wcxbc8tj30vm0ncjz6.jpg)
+
+
+
+
+
+![image-20210531204956261](https://tva1.sinaimg.cn/large/008i3skNly1gr1wg83rqnj30v60ni79m.jpg)
+
+I为input
+
 ## capsulenet
 
 
 
 paper:	Transformers are RNNS ：Fast Autoregressive Transformers with Linear Attention
 
-​				Long Range Arena: A benchmark for Efficient Transformers
+​				Long Range Arena: A benchmark for Efficent Transformers
 
 Capsule: output a vector
 

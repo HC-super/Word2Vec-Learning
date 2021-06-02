@@ -369,3 +369,39 @@ output layer and loss
 ![image-20210531202856210](https://tva1.sinaimg.cn/large/008i3skNgy1gr1vudtjfdj30cs09g45u.jpg)
 
 ![image-20210531202842704](https://tva1.sinaimg.cn/large/008i3skNgy1gr1vu56iozj30dw0akgts.jpg)
+
+## Encoder-Decoder
+
+Encoder-Decoder 通常称作 编码器-解码器，是深度学习 中常⻅的模型框架。
+
+Encoder-Decoder 并不是 一个具体的模型，而是一个通用的框架。
+
+Decoder部分可以是任意文字，语音，图像以及视频数据，模型也可以结合CNN，RNN，LSTM
+
+
+
+
+
+
+
+
+
+nlp
+
+1. Translation
+
+2. summarization
+
+3. Chat-bot
+4. Question Answering
+
+![image-20210602165919140](https://tva1.sinaimg.cn/large/008i3skNly1gr410vtgqbj30tc0kwte6.jpg)
+
+文法剖析树
+
+![image-20210602170148297](https://tva1.sinaimg.cn/large/008i3skNly1gr413gp6flj30pk0jowhi.jpg)
+
+
+
+
+

@@ -61,8 +61,6 @@ val_dataset = tf.data.Dataset.from_tensor_slices((
     val_labels
 ))
 
-# test_labels = [1]*len(test1)
-
 test_dataset = tf.data.Dataset.from_tensor_slices((
     dict(test_encodings)
 ))

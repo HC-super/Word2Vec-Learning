@@ -130,30 +130,3 @@ result_output.to_csv("bert.csv", index=False, quoting=3)
 
 
 model.save("TFDistilBertForSequenceClassification")
-
-
-# In[16]:
-
-
-labels_pred_train = model.predict(train_dataset.batch(5))
-
-
-# In[24]:
-
-
-y_train = labels_pred_train.logits
-y_pred_train = np.argmax(y,axis = 1)
-y_pred_train[4]
-
-
-# In[18]:
-
-
-train_labels
-
-
-# In[ ]:
-
-
-
-

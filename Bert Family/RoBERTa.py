@@ -61,7 +61,6 @@ val_dataset = tf.data.Dataset.from_tensor_slices((
     val_labels
 ))
 
-# test_labels = [1]*len(test1)
 
 test_dataset = tf.data.Dataset.from_tensor_slices((
     dict(test_encodings)
@@ -83,7 +82,7 @@ history = model.fit(train_dataset.batch(10), epochs=1)
 # In[12]:
 
 
-evalu = model.evaluate(val_dataset.batch(5), batch_size=5)
+evalu = model.evaluate(val_dataset.batch(5))
 
 # In[13]:
 

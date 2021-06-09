@@ -84,13 +84,13 @@ model.compile(optimizer=optimizer, loss=model.compute_loss, metrics=tf.metrics.S
 # In[11]:
 
 
-history = model.fit(train_dataset.batch(8), epochs=3, batch_size=8)
+history = model.fit(train_dataset.batch(8), epochs=3)
 
 
 # In[12]:
 
 
-evalu = model.evaluate(val_dataset.batch(5), batch_size=5)
+evalu = model.evaluate(val_dataset.batch(5))
 
 
 # In[13]:

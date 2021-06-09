@@ -324,9 +324,13 @@ Self-Attention中的vector可同时产生
 
 ![image-20210531204956261](https://tva1.sinaimg.cn/large/008i3skNly1gr1wg83rqnj30v60ni79m.jpg)
 
-I为input
+I为input 
 
-## capsulenet
+O为output
+
+
+
+## capsule-net
 
 
 
@@ -370,6 +374,370 @@ output layer and loss
 
 ![image-20210531202842704](https://tva1.sinaimg.cn/large/008i3skNgy1gr1vu56iozj30dw0akgts.jpg)
 
+## seq2seq
+
+![image-20210603110211882](https://tva1.sinaimg.cn/large/008i3skNly1gr4wblxvwkj310o0omb0a.jpg)
+
+
+
+![image-20210602183225023](https://tva1.sinaimg.cn/large/008i3skNly1gr43pr6hc2j31630u0ka0.jpg)
+
+1. one-hot
+2. 词汇归类（word class）
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr43rvare5j30pc0l0n1w.jpg" alt="image-20210602183427475" style="zoom:50%;" />
+
+
+
+3. word Embedding 每个词用向量表示，词汇意思相近的向量距离较近
+
+但是一个词汇会有不同的意思。
+
+![image-20210602183652822](https://tva1.sinaimg.cn/large/008i3skNly1gr43ue9qrrj31240lugxs.jpg)
+
+bank的不同的token但是是同一个Embedding（不同的词义却用一个向量来表示了）
+
+前两个bank是银行的意思，后两个是岸的意思
+
+如 The hospitial has its own blood **bank**. 这里的bank指的是血库。*是否该归类于第三个意思？*
+
+
+
+所以我们希望每一个的token有不同的Embedding .根据token的上下文来判断
+
+![image-20210602184434052](https://tva1.sinaimg.cn/large/008i3skNly1gr442e8r4xj31260ny4fg.jpg)
+
+contextualized word embedding
+
+rnn会考虑到前文所说的，cnn可以用多个卷积层来扩大感受野
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr605yuilrj30z40rwh3k.jpg" alt="image-20210604100042497" style="zoom:50%;" />
+
+![image-20210604101434138](https://tva1.sinaimg.cn/large/008i3skNgy1gr60kd74e9j311y0rs7k6.jpg)
+
+image caption gereration
+
+将图像用cnn生成一个vector之后喂到rnn中
+
+![image-20210604101902140](https://tva1.sinaimg.cn/large/008i3skNgy1gr60p0lyc9j31080qck9m.jpg)
+
+encoder的rnn和decoder的rnn可以相同也可以不同
+
+seq2seq的learning
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr60qve47ij30jc0l2jwb.jpg" alt="image-20210604102049068" style="zoom:50%;" />
+
+由于模型中没有考虑到之前是否说过Hi，要将之前的回答考虑进来我们可以这样设计模型：
+
+![image-20210604104129451](https://tva1.sinaimg.cn/large/008i3skNly1gr61cdhmp9j30xc0nu7kf.jpg)
+
+machine translation
+
+attention-based model
+
+$h_i$为RNN hidden layer 的output
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr61kt91hdj311s0qo7js.jpg" alt="image-20210604104936033" style="zoom: 33%;" />
+
+![image-20210604105141596](https://tva1.sinaimg.cn/large/008i3skNly1gr61mze9bij30yw0m4k1i.jpg)
+
+
+
+$c^0$是Decoder input，这里的softmax不一定要加，不加有可能更好。
+
+ ![image-20210604105514106](https://tva1.sinaimg.cn/large/008i3skNly1gr61qnxm9yj310q0r6nb1.jpg)
+
+
+
+![image-20210604112822723](https://tva1.sinaimg.cn/large/008i3skNgy1gr62p5tuvxj30k00mkn5u.jpg)
+
+![image-20210604113644461](https://tva1.sinaimg.cn/large/008i3skNgy1gr62xvj1tdj310u0pwna6.jpg)
+
+document产生句向量后，对每一个句子通过mach和q进行运算后产生$\alpha$  score，之后通过weight sum得到extracted information输入到DNN中得到answer。
+
+memory network还有更复杂的版本算match的部分和抽information的部分不见得是一样的。
+
+![image-20210604130100767](https://tva1.sinaimg.cn/large/008i3skNgy1gr65dl6zdoj31280qsduc.jpg)
+
+![image-20210604130325307](https://tva1.sinaimg.cn/large/008i3skNgy1gr65g1yyvsj313e0to16g.jpg)
+
+
+
+相同颜色可以看成一样也可以看成不一样
+
+这里讲的memory machine是在memory的基础上做attention，然后从memory里面将information extract出来⬆️
+
+
+
+下面要将的neural Turing machine不只是可以从memory里面得到信息，并且其还能将信息写到memory里面然后在之后的time step中得出来
+
+![image-20210604130921198](https://tva1.sinaimg.cn/large/008i3skNgy1gr65m8iq1aj310i0mo16i.jpg)
+
+![image-20210604151256714](https://tva1.sinaimg.cn/large/008i3skNgy1gr696u0gqqj30zk0r27ha.jpg)
+
+f为任意的如RNN或者lstm等网络
+
+![image-20210604152759499](https://tva1.sinaimg.cn/large/008i3skNgy1gr69mhjqp4j31bq0tik6e.jpg)
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr69nuarb7j31200rotnj.jpg" alt="image-20210604152918088" style="zoom:33%;" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+transformer非常知名的应用seq2seq model
+
+Bert 非监督学习的transformer
+
+RNN不容易被平行化
+
+![image-20210604161323166](https://tva1.sinaimg.cn/large/008i3skNgy1gr6axpow9pj31120tah4d.jpg)
+
+cnn比较容易平行化
+
+self-attention来取代CNN，输入和输出和rnn相同
+
+![](https://tva1.sinaimg.cn/large/008i3skNgy1gr6b1id8waj313k0q24dz.jpg)
+
+$b^i$可以同时算出
+
+self-attention的变形——multi-head Self-attention（2 heads as example）
+
+![image-20210604163139306](https://tva1.sinaimg.cn/large/008i3skNgy1gr6bgq92dkj311q0t44cv.jpg)
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr6bhgxqj2j30f4078myg.jpg" alt="image-20210604163223410" style="zoom:50%;" />
+
+head的数目为超参数
+
+对于self-attention来说input的顺序不重要
+
+![image-20210604163504330](https://tva1.sinaimg.cn/large/008i3skNgy1gr6bk9v18pj30be0eygo5.jpg)
+
+原论文中$e^i$不是训练出来的，他的目的是标识input的顺序
+
+换句话说可以使每一个$x^i$添加一个one-hot向量$p^i$
+
+![image-20210604163950916](https://tva1.sinaimg.cn/large/008i3skNgy1gr6bp97dg5j311a0dkgqs.jpg)
+
+![image-20210604164133386](https://tva1.sinaimg.cn/large/008i3skNgy1gr6br0zs2mj311e0r2drb.jpg)![image-20210604164220216](https://tva1.sinaimg.cn/large/008i3skNgy1gr6brtpnqgj31180r6apo.jpg)
+
+![img](https://tva1.sinaimg.cn/large/008i3skNly1gr78hviyfog30hs0fqhco.gif)
+
+bidirectional RNN可以用self-attention取代掉
+
+decoder的selfattention也可以用selfattention替换掉
+
+
+
+![image-20210604170230662](https://tva1.sinaimg.cn/large/008i3skNly1gr6cctl8bmj313o0ru1f5.jpg)
+
+layer norm通常用于rnn
+
+![image-20210604170404805](https://tva1.sinaimg.cn/large/008i3skNly1gr6ceg1ac3j31320nedx1.jpg)
+
+![image-20210604170614899](https://tva1.sinaimg.cn/large/008i3skNly1gr6cgpcxjuj313e0rsqgq.jpg)
+
+![image-20210604174713757](https://tva1.sinaimg.cn/large/008i3skNly1gr6dnd2v5tj312s0syaxu.jpg)
+
+![image-20210604174958212](https://tva1.sinaimg.cn/large/008i3skNly1gr6dq7erdyj60zq0og7f502.jpg)
+
+![image-20210604175027268](https://tva1.sinaimg.cn/large/008i3skNly1gr6dqp93y4j611u0pytma02.jpg)
+
+
+
+## ELMO
+
+Embedding from Language Model（ELMO）//  RNN based language mode
+
+通过许多句子来训练
+
+https://arxiv.org/abs/1802.05365
+
+![image-20210602191510519](https://tva1.sinaimg.cn/large/008i3skNly1gr44y8duyhj31160gkamd.jpg)
+
+通过学习预测下一个token
+
+将RNN的hidden layer拿出来就是该词通过上下文输出的embedding
+
+考虑前文：前向RNN
+
+考虑下文：反向RNN
+
+![image-20210602191632248](https://tva1.sinaimg.cn/large/008i3skNly1gr44zni108j31200r6h71.jpg)
+
+
+
+ ![image-20210602193406287](https://tva1.sinaimg.cn/large/008i3skNly1gr45hxsmc0j31140soarj.jpg)
+
+通过RNN学习得到两个embedding后，根据要做的任务来确定出$\alpha_1$和$\alpha2$这两个参数得到蓝色的向量。
+
+## BERT （Bidirectional Encoder Representations from Transformers）
+
+BERT = Encoder of Transformer
+
+Learned from  a large amount of text without annotation
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr4606kbbgj30l00e6whi.jpg" alt="image-20210602195138523" style="zoom:25%;" />
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr460u59zjj60jc0re45w02.jpg" alt="image-20210602195216120" style="zoom:50%;" />
+
+在中文处理中BERT通常用字，由于常用字是的数量较词来说少很多。
+
+ BERT的训练
+
+方法：
+
+1. Masked LM
+
+遮盖一个句子里面15%的词，之后进行预测，对于给预测的词embedding
+
+如果两个词添在同一个地方没有违和感呢那么它们就有类似的embedding
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr4770kvj5j60f20f878b02.jpg" alt="image-20210602203248829" style="zoom: 50%;" />
+
+2. 下一个句子预测
+
+[SEP]：the boundary of two sentences
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr47m7z1bqj31200kyjzz.jpg" alt="image-20210602204725544" style="zoom:50%;" />
+
+[CLS]：the position that outputs classification results
+
+BERT 内部使用attention实现的
+
+方法1和方法2同时使用。
+
+如何应用bert：
+
+![image-20210602205816524](https://tva1.sinaimg.cn/large/008i3skNly1gr47xi8qngj30n40ga0yd.jpg)
+
+linear classifier从头学，bert微调
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr47zxxfvpj30oa0gm7ag.jpg" alt="image-20210602210037045" style="zoom:67%;" />
+
+对于每一个词作分类⬆️
+
+![image-20210602210230897](https://tva1.sinaimg.cn/large/008i3skNly1gr481x4pnnj310s0pwgyj.jpg)
+
+给一个前提和假设推出是否正确或者未知⬆️
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr48a37713j311w0qie0s.jpg" alt="image-20210602211021541" style="zoom:67%;" />
+
+基于提取的回答系统。
+
+给一个文档和问题的embedding表示，给出的答案在A中。
+
+红蓝vector的维度和bert输出的黄色维度相同。
+
+黄色vector和红色vector作dot product.
+
+![image-20210602211639417](https://tva1.sinaimg.cn/large/008i3skNly1gr48goysf7j31220putb3.jpg)
+
+![image-20210602211713456](https://tva1.sinaimg.cn/large/008i3skNly1gr48h88ps8j312a0pw15a.jpg)
+
+红色算出s蓝色算出e=3，最后的答案就是
+
+如果e落在s前面则此题无解。
+
+Enhanced Representation through knowledge integration（ERNIE）
+
+designed for Chinese
+
+字为单位，一次盖一个词汇
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr4vj3mrk1j30og0f4aib.jpg" alt="image-20210603103448495" style="zoom:50%;" />
+
+https://arxiv.org/abs/1905.05950
+https://openreview.net/pdf?id=SJzSgnRcKX
+
+
+
+![image-20210603105646199](https://tva1.sinaimg.cn/large/008i3skNly1gr4w5yttztj31160q6x53.jpg)
+
+multilingual BERT
+
+![image-20210603125313010](https://tva1.sinaimg.cn/large/008i3skNly1gr4zj5vkzfj30ty0k8dqt.jpg) 
+
+给定英文文章的分类可以输出中文文章的分类
+
+Generative Pre-Training (GPT)
+
+![image-20210603125607600](https://tva1.sinaimg.cn/large/008i3skNly1gr4zm542qhj311o0pgk8e.jpg)
+
+是transformer的decoder
+
+![image-20210603125940920](https://tva1.sinaimg.cn/large/008i3skNly1gr4zpuh2krj31300qck3v.jpg)
+
+Zero-shot Learning?
+
+![image-20210603130402755](https://tva1.sinaimg.cn/large/008i3skNly1gr4zueer9aj314f0u0nnt.jpg)
+
+![image-20210603130605979](https://tva1.sinaimg.cn/large/008i3skNly1gr4zwj38u7j30jq03itap.jpg)
+
+![image-20210603130614315](https://tva1.sinaimg.cn/large/008i3skNly1gr4zwoayfrj316x0u04qp.jpg)
+
+attention总会聚焦到第一个词
+
+![image-20210603160323326](https://tva1.sinaimg.cn/large/008i3skNgy1gr551092bnj313w0u0k8j.jpg)
+
+
+
+同样的token就是同样的Embedding——word2vec，glove
+
+pre-train model
+
+将每个token用embedding向量表示。
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr56v36oncj30f40dejsr.jpg" alt="image-20210603170654336" style="zoom:33%;" />
+
+也可以通过输入字母来输出这个单词所对应的向量预测这个单词——FastText
+
+中文：image喂到CNN
+
+ELMo，BERT等为contextualized Embedding（吃一整个句子再给每一个token embedding）
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr5717rks1j312u0igadq.jpg" alt="image-20210603171247998" style="zoom:50%;" />
+
+通常这样的model有很多layers
+
+Tree-based model （考虑了文法的因素）
+
+<img src="../../../Library/Application Support/typora-user-images/image-20210603174643738.png" alt="image-20210603174643738" style="zoom:50%;" />
+
+![image-20210603181254893](https://tva1.sinaimg.cn/large/008i3skNgy1gr58rt3rj9j310y0t07w2.jpg)
+
+
+
+albert 12层和24层都是一样的参数
+
+![image-20210603181815949](https://tva1.sinaimg.cn/large/008i3skNgy1gr58xcic7jj31400qywnr.jpg)
+
+![image-20210603182107580](https://tva1.sinaimg.cn/large/008i3skNgy1gr590bres5j313y0q8asc.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Encoder-Decoder
 
 Encoder-Decoder 通常称作 编码器-解码器，是深度学习 中常⻅的模型框架。
@@ -401,7 +769,7 @@ nlp
 
 ![image-20210602170148297](https://tva1.sinaimg.cn/large/008i3skNly1gr413gp6flj30pk0jowhi.jpg)
 
-
+隐状态可以理解为隐状态的活性值$h_t$，部分文献称为状态（state）或者（Hidden State）
 
 
 

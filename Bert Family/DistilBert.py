@@ -57,19 +57,19 @@ model = TFDistilBertForSequenceClassification.from_pretrained('distilbert-base-u
 
 optimizer = tf.keras.optimizers.Adam(learning_rate=5e-5)
 
-model.compile(optimizer=optimizer, loss=model.compute_loss, metrics=['acc'])  # can also use any keras loss fn
+model.compile(optimizer=optimizer, loss=model.compute_loss)  # can also use any keras loss fn
 
 
 # In[4]:
 
 
-history = model.fit(train_dataset.batch(5), epochs=5, batch_size=5)
+history = model.fit(train_dataset.batch(5), epochs=5)
 
 
 # In[5]:
 
 
-model.evaluate(val_dataset.batch(5), batch_size=5)
+model.evaluate(val_dataset.batch(5))
 
 
 # In[6]:

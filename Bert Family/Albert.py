@@ -82,7 +82,7 @@ model.compile(optimizer=optimizer, loss=model.compute_loss, metrics=tf.metrics.S
 # In[ ]:
 
 
-history = model.fit(train_dataset.batch(10), epochs=1)
+history = model.fit(train_dataset.batch(10), epochs=3)
 
 
 # In[12]:

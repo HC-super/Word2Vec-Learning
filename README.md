@@ -4,7 +4,7 @@ For learning NLP！
 
 ## 代码索引
 
-[神经网络数据预处理](https://github.com/HC-super/Word2Vec-Learning/blob/main/imdb_preprocess.py)
+[数据预处理](https://github.com/HC-super/Word2Vec-Learning/blob/main/imdb_preprocess.py)
 
 [ALBERT](https://github.com/HC-super/Word2Vec-Learning/blob/main/Bert%20Family/Albert.py)
 

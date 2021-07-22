@@ -1,3 +1,7 @@
+
+
+
+
 # Word2Vec-Learning
 
 For learning NLP！
@@ -291,44 +295,6 @@ embedding 在深度学习中经常和manifold（流形）搭配使用
 
 
 
-## 自注意力模型
-
-Self-Attention
-
-on the rellationship between SelfAttention and CNN<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr1upisvs0j30py0c83zm.jpg" alt="image-20210531182927927" style="zoom:33%;" />
-
-Self-Attention VS. RNN
-
-RNN中的vector无法同时产生需传递
-
-Self-Attention中的vector可同时产生
-
-<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr1w78qfnlj30vo0nm49q.jpg" alt="image-20210531204118549" style="zoom:50%;" />
-
-文章：Attention is all you need
-
-![image-20210722104204667](https://i.loli.net/2021/07/22/V5XBf4TpGuoeWs3.png)
-
-<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr1w8optimj30v40n6tcg.jpg" alt="image-20210531204241513" style="zoom:50%;" />
-
-$\alpha$为两向量之间的关联性，称为attention score
-
-<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr1wa46zsqj60v40nkwl302.jpg" alt="image-20210531204404096" style="zoom:50%;" />
-
-这里不一定是softmax，其他的激活函数都可以
-
-![image-20210531204646128](https://tva1.sinaimg.cn/large/008i3skNly1gr1wcxbc8tj30vm0ncjz6.jpg)
-
-哪一个向量的v大，最后的b就会dominate那个向量
-
-![image-20210531204956261](https://tva1.sinaimg.cn/large/008i3skNly1gr1wg83rqnj30v60ni79m.jpg)
-
-I为input 
-
-O为output
-
-
-
 ## capsule-net
 
 
@@ -343,7 +309,7 @@ Neuron:output a value
 
 Geoffrey Hinton深度学习创始人之一
 
-他的论文[CapsuleNet](https://arxiv.org/abs/1710.09829)
+它的论文[CapsuleNet](https://arxiv.org/abs/1710.09829)
 
 ![image-20210531194908351](https://tva1.sinaimg.cn/large/008i3skNgy1gr1uoz24wxj31ic0fc0v9.jpg)
 
@@ -373,7 +339,128 @@ output layer and loss
 
 ![image-20210531202842704](https://tva1.sinaimg.cn/large/008i3skNgy1gr1vu56iozj30dw0akgts.jpg)
 
+
+
+## 自注意力模型
+
+Self-Attention
+
+on the rellationship between SelfAttention and CNN<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr1upisvs0j30py0c83zm.jpg" alt="image-20210531182927927" style="zoom:33%;" />
+
+Self-Attention VS. RNN
+
+RNN中的vector无法同时产生需传递
+
+Self-Attention中的vector可同时产生
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr1w78qfnlj30vo0nm49q.jpg" alt="image-20210531204118549" style="zoom:50%;" />
+
+文章：Attention is all you need
+
+
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr1w8optimj30v40n6tcg.jpg" alt="image-20210531204241513" style="zoom:50%;" />
+
+$\alpha$为两向量之间的关联性，称为attention score
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gr1wa46zsqj60v40nkwl302.jpg" alt="image-20210531204404096" style="zoom:50%;" />
+
+这里不一定是softmax，其他的激活函数都可以
+
+![image-20210531204646128](https://tva1.sinaimg.cn/large/008i3skNly1gr1wcxbc8tj30vm0ncjz6.jpg)
+
+哪一个向量的v大，最后的b就会dominate那个向量
+
+![](https://i.loli.net/2021/07/22/V5XBf4TpGuoeWs3.png)
+
+
+
+$b_i$是同时产生的
+
+![image-20210531204956261](https://tva1.sinaimg.cn/large/008i3skNly1gr1wg83rqnj30v60ni79m.jpg)
+
+$ I $​​为self-attention的input：$[a^1,a^2,a^3,a^4]$​​​
+
+$O$​为output
+
+self-attention唯一需要学习的是$W^q,W^k,W^v$
+
+**multi-head self-attention 是说有几个不同的$q,k,v$​​​​** 
+
+![image-20210722145459259](https://i.loli.net/2021/07/22/4mJowFzgtaC9qVQ.png)
+
+
+
+$b^i$可以同时算出
+
+self-attention的变形——multi-head Self-attention（2 heads as example）
+
+![image-20210604163139306](https://tva1.sinaimg.cn/large/008i3skNgy1gr6bgq92dkj311q0t44cv.jpg)
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr6bhgxqj2j30f4078myg.jpg" alt="image-20210604163223410" style="zoom:50%;" />
+
+head的数目为超参数
+
+对于self-attention来说input的顺序不重要
+
+![image-20210604163504330](https://tva1.sinaimg.cn/large/008i3skNgy1gr6bk9v18pj30be0eygo5.jpg)
+
+原论文中$e^i$​不是训练出来的，他的目的是标识input的顺序
+
+No position information in self-attention 
+
+换句话说可以使每一个$x^i$添加一个one-hot向量$p^i$​
+
+​	**Positional Encoding** 
+
+each position has a unique positional vector $e^i$​​​ 
+
+
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr6bp97dg5j311a0dkgqs.jpg" alt="image-20210604163950916" style="zoom:50%;" />
+
+
+
+
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr6br0zs2mj311e0r2drb.jpg" alt="image-20210604164133386" style="zoom: 50%;" />
+
+几种不同的position编码形式
+
+![image-20210722151303430](https://i.loli.net/2021/07/22/1Rv2zpHMTj9lWGA.png)
+
+
+
+
+
+![image-20210604164220216](https://tva1.sinaimg.cn/large/008i3skNgy1gr6brtpnqgj31180r6apo.jpg)
+
+![img](https://tva1.sinaimg.cn/large/008i3skNly1gr78hviyfog30hs0fqhco.gif)
+
+bidirectional RNN可以用self-attention取代掉
+
+decoder的selfattention也可以用selfattention替换掉
+
+
+
+![image-20210604170230662](https://tva1.sinaimg.cn/large/008i3skNly1gr6cctl8bmj313o0ru1f5.jpg)
+
+layer norm通常用于rnn
+
+![image-20210604170404805](https://tva1.sinaimg.cn/large/008i3skNly1gr6ceg1ac3j31320nedx1.jpg)
+
+![image-20210604170614899](https://tva1.sinaimg.cn/large/008i3skNly1gr6cgpcxjuj313e0rsqgq.jpg)
+![image-20210604174713757](https://tva1.sinaimg.cn/large/008i3skNly1gr6dnd2v5tj312s0syaxu.jpg)
+
+![image-20210604174958212](https://tva1.sinaimg.cn/large/008i3skNly1gr6dq7erdyj60zq0og7f502.jpg)
+
+![image-20210604175027268](https://tva1.sinaimg.cn/large/008i3skNly1gr6dqp93y4j611u0pytma02.jpg)
+
+
+
 ## seq2seq
+
+
 
 ![image-20210603110211882](https://tva1.sinaimg.cn/large/008i3skNly1gr4wblxvwkj310o0omb0a.jpg)
 
@@ -468,7 +555,7 @@ memory network还有更复杂的版本算match的部分和抽information的部�
 
 
 
-下面要将的neural Turing machine不只是可以从memory里面得到信息，并且其还能将信息写到memory里面然后在之后的time step中得出来
+下面要讲的neural Turing machine不只是可以从memory里面得到信息，并且其还能将信息写到memory里面然后在之后的time step中得出来
 
 ![image-20210604130921198](https://tva1.sinaimg.cn/large/008i3skNgy1gr65m8iq1aj310i0mo16i.jpg)
 
@@ -482,25 +569,11 @@ f为任意的如RNN或者lstm等网络
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 transformer非常知名的应用seq2seq model
 
-Bert 非监督学习的transformer
+Bert 是非监督学习的transformer
 
-RNN不容易被平行化
+RNN不容易被平行化，所谓平行化就是每一个rnn的unit，其输出都是有先后顺序的，不是同时产生的，而cnn可以做到类似并行处理的效果
 
 ![image-20210604161323166](https://tva1.sinaimg.cn/large/008i3skNgy1gr6axpow9pj31120tah4d.jpg)
 
@@ -508,54 +581,43 @@ cnn比较容易平行化
 
 self-attention来取代CNN，输入和输出和rnn相同
 
+self-attention和CNN的关系
+
+![image-20210722152951421](https://i.loli.net/2021/07/22/ROeYdTP2lHxSkjv.png)
+
+![image-20210722153008783](https://i.loli.net/2021/07/22/QXp53Bzsdg1ahYC.png)
+
+![image-20210722155031200](https://i.loli.net/2021/07/22/8LJuFakdWPAhKmf.png)
+
+CNN good for less data
+
+self-attention good for more data
+
+[上面的⬆️文献](https://arxiv.org/pdf/2010.11929.pdf)
+
+![image-20210722165524280](https://i.loli.net/2021/07/22/FRZolyux68CMmIj.png)
+
+self-attention的运算效率由于parallel使得其更有效率
+
+[Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention](https://arxiv.org/abs/2006.16236)
+
+
+
+<img src="https://i.loli.net/2021/07/22/y3RhP1Gc79mFMlx.png" alt="image-20210722170401488" style="zoom:50%;" />
+
+
+
+self-attention最早用在transformer中，可以理解为广义的transformer是一种self-attention
+
+传统的transformer模型庞大，训练的parameter多，speed变快往往需要压缩模型，但会带来performance变低
+
+
+
+
+
+
+
 ![](https://tva1.sinaimg.cn/large/008i3skNgy1gr6b1id8waj313k0q24dz.jpg)
-
-$b^i$可以同时算出
-
-self-attention的变形——multi-head Self-attention（2 heads as example）
-
-![image-20210604163139306](https://tva1.sinaimg.cn/large/008i3skNgy1gr6bgq92dkj311q0t44cv.jpg)
-
-<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr6bhgxqj2j30f4078myg.jpg" alt="image-20210604163223410" style="zoom:50%;" />
-
-head的数目为超参数
-
-对于self-attention来说input的顺序不重要
-
-![image-20210604163504330](https://tva1.sinaimg.cn/large/008i3skNgy1gr6bk9v18pj30be0eygo5.jpg)
-
-原论文中$e^i$不是训练出来的，他的目的是标识input的顺序
-
-换句话说可以使每一个$x^i$添加一个one-hot向量$p^i$
-
-![image-20210604163950916](https://tva1.sinaimg.cn/large/008i3skNgy1gr6bp97dg5j311a0dkgqs.jpg)
-
-![image-20210604164133386](https://tva1.sinaimg.cn/large/008i3skNgy1gr6br0zs2mj311e0r2drb.jpg)![image-20210604164220216](https://tva1.sinaimg.cn/large/008i3skNgy1gr6brtpnqgj31180r6apo.jpg)
-
-![img](https://tva1.sinaimg.cn/large/008i3skNly1gr78hviyfog30hs0fqhco.gif)
-
-bidirectional RNN可以用self-attention取代掉
-
-decoder的selfattention也可以用selfattention替换掉
-
-
-
-![image-20210604170230662](https://tva1.sinaimg.cn/large/008i3skNly1gr6cctl8bmj313o0ru1f5.jpg)
-
-layer norm通常用于rnn
-
-![image-20210604170404805](https://tva1.sinaimg.cn/large/008i3skNly1gr6ceg1ac3j31320nedx1.jpg)
-
-![image-20210604170614899](https://tva1.sinaimg.cn/large/008i3skNly1gr6cgpcxjuj313e0rsqgq.jpg)
-
-![image-20210604174713757](https://tva1.sinaimg.cn/large/008i3skNly1gr6dnd2v5tj312s0syaxu.jpg)
-
-![image-20210604174958212](https://tva1.sinaimg.cn/large/008i3skNly1gr6dq7erdyj60zq0og7f502.jpg)
-
-![image-20210604175027268](https://tva1.sinaimg.cn/large/008i3skNly1gr6dqp93y4j611u0pytma02.jpg)
-
-
-
 ## ELMO
 
 Embedding from Language Model（ELMO）//  RNN based language mode
@@ -744,10 +806,6 @@ Encoder-Decoder 通常称作 编码器-解码器，是深度学习 中常⻅的�
 Encoder-Decoder 并不是 一个具体的模型，而是一个通用的框架。
 
 Decoder部分可以是任意文字，语音，图像以及视频数据，模型也可以结合CNN，RNN，LSTM
-
-
-
-
 
 
 

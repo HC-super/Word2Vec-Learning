@@ -618,6 +618,27 @@ self-attention最早用在transformer中，可以理解为广义的transformer�
 
 
 ![](https://tva1.sinaimg.cn/large/008i3skNgy1gr6b1id8waj313k0q24dz.jpg)
+
+multi-class classification 是说从众多class里面选一个
+
+multi-label classification 是说同一个object属于不同的labels
+
+![image-20210722182619594](https://i.loli.net/2021/07/22/KT46ud2XkCDoxbg.png)
+
+### Encoder
+
+Encoder要做的事情,就是**给一排向量，输出另外一排向量**
+
+![image-20210429205911444](https://i.loli.net/2021/07/22/vdS5O6j7wohpiHW.png)
+
+![image-20210429210126607](https://gitee.com/unclestrong/deep-learning21_note/raw/master/imgbed/image-20210429210126607.png)
+
+
+
+
+
+
+
 ## ELMO
 
 Embedding from Language Model（ELMO）//  RNN based language mode

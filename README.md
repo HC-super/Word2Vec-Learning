@@ -307,17 +307,19 @@ Self-Attention中的vector可同时产生
 
 文章：Attention is all you need
 
+![image-20210722104204667](https://i.loli.net/2021/07/22/V5XBf4TpGuoeWs3.png)
+
 <img src="https://tva1.sinaimg.cn/large/008i3skNly1gr1w8optimj30v40n6tcg.jpg" alt="image-20210531204241513" style="zoom:50%;" />
+
+$\alpha$为两向量之间的关联性，称为attention score
 
 <img src="https://tva1.sinaimg.cn/large/008i3skNly1gr1wa46zsqj60v40nkwl302.jpg" alt="image-20210531204404096" style="zoom:50%;" />
 
-这里不一定是softmax
+这里不一定是softmax，其他的激活函数都可以
 
 ![image-20210531204646128](https://tva1.sinaimg.cn/large/008i3skNly1gr1wcxbc8tj30vm0ncjz6.jpg)
 
-
-
-
+哪一个向量的v大，最后的b就会dominate那个向量
 
 ![image-20210531204956261](https://tva1.sinaimg.cn/large/008i3skNly1gr1wg83rqnj30v60ni79m.jpg)
 

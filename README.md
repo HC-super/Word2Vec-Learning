@@ -635,6 +635,58 @@ Encoder要做的事情,就是**给一排向量，输出另外一排向量**
 
 
 
+![image-20210722222355975](https://i.loli.net/2021/07/22/AUsZzLBtqpyf9TS.png)
+
+Encoder内部：
+
+![image-20210722222510518](https://i.loli.net/2021/07/22/slydH5igekPNzVD.png)
+
+每一个block 其实,并不是neural network的一层每一个block裡面做的事情,是好几个layer在做的事情,
+
+![image-20210723122850372](https://i.loli.net/2021/07/23/kYzp3vuxq658icT.png)
+
+transformer的block中的self-attention中加入了residual connection，这种residual connection,在deep learning的领域用的是非常的广泛。
+
+**layer normalization做的事情,比batch normalization**更简单一点
+
+每一个block
+
+- 先做一个self-attention,input一排vector以后,做self-attention,考虑整个sequence的资讯，Output另外一排vector.
+- 接下来这一排vector,会再丢到fully connected的feed forward network裡面,再output另外一排vector,这一排vector就是block的输出
+
+但是要注意一下,**batch normalization是对不同example,不同feature的同一个dimension,去计算mean跟standard deviation**
+
+但**layer normalization,它是对同一个feature,同一个example裡面,不同的dimension,去计算mean跟standard deviation**
+
+计算出mean,跟standard deviation以后,就可以做一个normalize,我们把input 这个vector裡面每一个,dimension减掉mean,再除以standard deviation以后得到x',就是layer normalization的输出
+
+![image-20210723123155572](https://i.loli.net/2021/07/23/F4BYOJ3fXjEcALZ.png)
+
+得到layer normalization的输出以后,它的这个输出 才是FC network的输入
+
+![image-20210429212721750](https://i.loli.net/2021/07/23/CI8Asr1boUqPpLR.png)
+
+- Add&norm,就是residual加layer normalization
+
+> - 有一篇文章叫,[on layer normalization in the transformer architecture](https://arxiv.org/abs/2002.04745)，它问的问题就是 為什麼,layer normalization是放在那个地方呢,為什麼我们是先做,residual再做layer normalization,能不能够把layer normalization,放到每一个block的input,也就是说 你做residual以后,再做layer normalization,再加进去 你可以看到说左边这个图,是原始的transformer,右边这个图是稍微把block,更换一下顺序以后的transformer,更换一下顺序以后 结果是会比较好的,这就代表说,原始的transformer 的架构,并不是一个最optimal的设计,你永远可以思考看看,有没有更好的设计方式
+> - 再来还有一个问题就是,為什麼是layer norm 為什麼是别的,不是别的,為什麼不做batch normalization,也许这篇paper可以回答你的问题,这篇paper是[Power Norm：,Rethinking Batch Normalization In Transformers](https://arxiv.org/abs/2003.07845),它首先告诉你说 為什麼,batch normalization不如,layer normalization,在Transformers裡面為什麼,batch normalization不如,layer normalization,接下来在说,它提出来一个power normalization,一听就是很power的意思,都可以比layer normalization,还要performance差不多或甚至好一点
+
+Bert 就是transformer的encoder
+
+![image-20210727173301184](https://i.loli.net/2021/07/27/W3iOaU254kzAwMh.png)
+
+Decoder---auto regressive(speech Recognition as example)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

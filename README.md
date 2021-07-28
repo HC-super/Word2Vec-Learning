@@ -371,6 +371,10 @@ $\alpha$为两向量之间的关联性，称为attention score
 
 哪一个向量的v大，最后的b就会dominate那个向量
 
+$\hat\alpha  _{1,i} = q^1 \cdot k^i $​
+
+
+
 ![](https://i.loli.net/2021/07/22/V5XBf4TpGuoeWs3.png)
 
 
@@ -677,7 +681,33 @@ Bert 就是transformer的encoder
 
 Decoder---auto regressive(speech Recognition as example)
 
+BEGIN是一个special token 用one-hot向量来表示
 
+![image-20210728100248114](https://i.loli.net/2021/07/28/F7mfrCLNcBqGKeV.png)
+
+
+
+![image-20210728100424205](https://i.loli.net/2021/07/28/WefoywJ75RK6ZlM.png)
+
+![image-20210728100823348](https://i.loli.net/2021/07/28/yAYw9g5kK7FUHd4.png)
+
+把decoder中间部分遮起来之后，encoder和decoder的模型差不多。
+
+decoder的multi-head attention加了masked
+
+masked attention只考虑自己以及自己之前的向量
+
+![image-20210728101848436](https://i.loli.net/2021/07/28/UTyVDZ8rnwX6tkC.png)
+
+![image-20210728104648214](https://i.loli.net/2021/07/28/7vlQ9puNi8Fx3SM.png)
+
+由于encoder是一个接一个输出的，所以对于decoder而言，也有输入的先后顺序。所以transformer是masked attention
+
+由于decoder的输出会再一次变为下一个输入的vector所以decoder如果不加设计的话output会一直循环下去不停止。
+
+所以vector中除了有表示字符的vector还有begin 和 end 。每一次的输出经历过softmax 之后选取一个最大的概率输出。
+
+![image-20210728105346677](https://i.loli.net/2021/07/28/gOieUIoyhv8Tarj.png)
 
 
 

@@ -395,7 +395,7 @@ self-attention唯一需要学习的是$W^q,W^k,W^v$
 
 
 
-$b^i$可以同时算出
+$b^{i,1} and\space b^{i,2} $​​​可以同时算出
 
 self-attention的变形——multi-head Self-attention（2 heads as example）
 
@@ -441,9 +441,13 @@ each position has a unique positional vector $e^i$​​​
 
 ![img](https://tva1.sinaimg.cn/large/008i3skNly1gr78hviyfog30hs0fqhco.gif)
 
+[the source of the gif above](https://ai.googleblog.com/2017/08/transformer-novel-neural-network.html)
+
+下面的动画演示了如何将tranformer应用于机器翻译。用于机器翻译的神经网络通常包含一个encoder，该encoder读取输入句子并生成其表示。decoder然后逐字生成输出句子，同时查阅encoder生成的表示。transformer首先为每个单词生成初始reppresentations或embeddings。这些由未填充的圆表示。然后，使用self-attention，它从所有其他单词中聚合信息，在整个上下文中为每个单词生成一个新的表示，由填充的球表示。然后对所有单词并行重复此步骤多次，连续生成新表示。
+
 bidirectional RNN可以用self-attention取代掉
 
-decoder的selfattention也可以用selfattention替换掉
+decoder的selfattention也可以用self-attention替换掉
 
 
 
@@ -676,6 +680,8 @@ transformer的block中的self-attention中加入了residual connection，这种r
 > - 再来还有一个问题就是,為什麼是layer norm 為什麼是别的,不是别的,為什麼不做batch normalization,也许这篇paper可以回答你的问题,这篇paper是[Power Norm：,Rethinking Batch Normalization In Transformers](https://arxiv.org/abs/2003.07845),它首先告诉你说 為什麼,batch normalization不如,layer normalization,在Transformers裡面為什麼,batch normalization不如,layer normalization,接下来在说,它提出来一个power normalization,一听就是很power的意思,都可以比layer normalization,还要performance差不多或甚至好一点
 
 Bert 就是transformer的encoder
+
+BERT是第一个深度双向、无监督的语言表示，只使用纯文本语料库进行预训练
 
 ![image-20210727173301184](https://i.loli.net/2021/07/27/W3iOaU254kzAwMh.png)
 

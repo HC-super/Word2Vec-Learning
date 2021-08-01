@@ -102,3 +102,13 @@ next sentence prediction
 ![image-20210531133245185](https://i.loli.net/2021/07/31/KZ3eSUE2PqDmI8o.png)
 
 BERT分化成各种任务的细胞，被称为微调（Fine-tune）在微调之前产生这个Bert的过程称为预训练。
+
+BERT是一个transformer 的encoder，它和transformer的encoder完全一样，BERT可以输入一行向量，然后输出另一行向量，输出的长度与输入长度相同。
+
+BERT不仅可以用于文本序列，还可以用于语音和图像。
+
+BERT的mask有两种方法，
+
+- 第一种是用特殊的符号来替换句子中的一个词
+- 第二种是随机把某一个字换成另外一个字来替换它。
+

@@ -345,6 +345,8 @@ output layer and loss
 
 Self-Attention
 
+
+
 on the rellationship between SelfAttention and CNN<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr1upisvs0j30py0c83zm.jpg" alt="image-20210531182927927" style="zoom:33%;" />
 
 Self-Attention VS. RNN
@@ -713,19 +715,148 @@ masked attention只考虑自己以及自己之前的向量
 
 所以vector中除了有表示字符的vector还有begin 和 end 。每一次的输出经历过softmax 之后选取一个最大的概率输出。
 
-![image-20210728105346677](https://i.loli.net/2021/07/28/gOieUIoyhv8Tarj.png)
+<img src="https://i.loli.net/2021/07/28/gOieUIoyhv8Tarj.png" alt="image-20210728105346677" style="zoom:50%;" />
+
+<img src="https://i.loli.net/2021/07/28/Nab4LY7RoGAdICs.png" alt="image-20210728105706417" style="zoom:50%;" />
+
+Non-autoregressive(NAT)
+
+<img src="https://i.loli.net/2021/07/28/63zpJeEaZUMwlgy.png" alt="image-20210728105830238" style="zoom: 50%;" />
+
+NAT是一次吃一整排begin然后产生整个句子。
+
+如何知道begin要放多少个当作NAT decoder的收入？
+
+- 一个做法是训练一个classifier，吃encoder的input，然后输出一个数字这个数字代表decoder应该输出的长度。
+- 另一种方法是堆一堆begin的token，设一个max length之后，输出句子中end之后的部分忽略掉
+
+NAT的Decoder优点：并行化：AT的decoder产生一百个字的句子需要一个字一个字地产生。而nat的decoder一个步骤就产生完整的句子。所以NAT的decoder要更快。
+
+另一个优点是NAT的encoder可以有效控制输出的长度。
+
+
+
+## Encoder-Decoder
+
+
+
+![image-20210506103314101](https://i.loli.net/2021/07/28/K7VZmN21RIyCFbw.png)
+
+
+
+encoder和decoder中间的连接叫做cross attention
+
+左边的两个输入源自encoder，第三个来自decoder。
+
+![image-20210728125318649](https://i.loli.net/2021/07/28/AHN682iIQWXxuKe.png)
+
+
+
+encoder提供k和v，decoder提供q，通过qkv来运算出v输入到一个fully connected network里面。
+
+### Training：
+
+<img src="https://i.loli.net/2021/07/28/ywLFeoADsPzGnKM.png" alt="image-20210728130333352" style="zoom:50%;" />
+
+它**跟分类很像**,每一次 Decoder 在產生一个中文字的时候,其实就是做了一次分类的问题,中文字假设有四千个,那就是**做有四千个类别的分类的问题**，我们**希望我们的输出,跟这四个字的 One-Hot Vector 越接近越好**
+
+其实就是将predict和truth进行minimize cross entropy
+
+Teacher Forcing： using the ground truth as input
+
+
+
+<img src="https://i.loli.net/2021/07/29/fPLSZN2s6ly9rbp.png" alt="image-20210506150925655" style="zoom:50%;" />
+
+**把 Ground Truth ,正确答案给它,希望 Decoder 的输出跟正确答案越接近越好**（监督学习）
+
+
+
+使用这个模型,在 Inference 的时候,Decoder 看到的是自己的输入,这**中间显然有一个 Mismatch**
+
+### Sequence To Sequence Model 的Tips
+
+#### copy mechainism（复制机制）
+
+在我们刚才的讨论裡面,我们都要求 Decoder 自己產生输出,但是对很多任务而言,也许 **Decoder 没有必要自己创造输出**出来,它需要做的事情,也许是**从输入的东西裡面复製**一些东西出来
+
+如聊天机器人中的人名
+
+![image-20210506160219468](https://i.loli.net/2021/07/29/v5hnpYxi3Qtqfs2.png)
+
+
+
+对机器来说,它其实**没有必要创造**库洛洛这个词汇,这对机器来说一定会是一个非常怪异的词汇,所以它可能很难,在训练资料裡面可能一次也没有出现过,所以它不太可能正确地產生这段词汇出来
+
+但是假设今天机器它在学的时候,它学到的是看到输入的时候说我是某某某,就直接把某某某,不管这边是什麼复製出来说某某某你好
+
+那这样子机器的**训练显然会比较容易**,它显然比较有可能得到正确的结果,所以复製对於对话来说,可能是一个需要的技术 需要的能力
+
+还有一个应用是用transformer来所summarization
+
+#### **summarization**
+
+
+
+<img src="https://i.loli.net/2021/07/29/yUwA18mTeFfxLWI.png" alt="image-20210506160548411"  />
+
+summarization需要大量文章（通常为百万级）来对模型进行训练，对于摘要这个任务而言，需要从文章里面复制一些文字出来。
 
 
 
 
 
+![image-20210729105327398](https://i.loli.net/2021/07/29/Gn8zQqHBNRrYDbw.png)
 
+beam search 对于具有创造性和随机性的模型效果不好。对于decoder来说，有时候需要加一些噪音才能使其表现更好。beam search 适合答案非常明确的任务。如语音辨识，其正确结果只有一个。
 
+ BLEU Score
 
+### Optimizing Evaluation Metrics?
 
+在作业裡面,我们评估的标準用的是,BLEU Score,BLEU Score 是你的 Decoder,先產生一个完整的句子以后,再去跟正确的答案一整句做比较,我们是拿两个句子之间做比较,才算出 BLEU Score
 
+但我们在训练的时候显然不是这样,**训练**的时候,**每一个词汇是分开考虑的**,训练的时候,我们 Minimize 的是 Cross Entropy,Minimize Cross Entropy,真的可以 Maximize BLEU Score 吗
 
+![image-20210506165953175](https://gitee.com/unclestrong/deep-learning21_note/raw/master/imgbed/image-20210506165953175.png)
 
+不一定,因為这两个根本就是,它们可能有一点点的关联,但它们又没有那麼直接相关,它们根本就是两个不同的数值,所以我们 Minimize Cross Entropy,不见得可以让 BLEU Score 比较大
+
+我们训练的时候,是看 Cross Entropy,但是我们实际上你作业真正评估的时候,看的是 BLEU Score,所以你 Validation Set,其实应该考虑用 BLEU Score
+
+那接下来有人就会想说,那我们能不能**在 Training 的时候,就考虑 BLEU Score 呢**,我们能不能够训练的时候就说,我的 Loss 就是,BLEU Score 乘一个负号,那我们要 Minimize 那个 Loss,假设你的 Loss 是,BLEU Score乘一个负号,它也等於就是 Maximize BLEU Score
+
+但是**这件事实际上没有那麼容易**,你当然可以把 BLEU Score,当做你训练的时候,你要最大化的一个目标,但是 BLEU Score 本身很复杂,它是不能微分的,
+
+这边之所以採用 Cross Entropy,而且是每一个中文的字分开来算,就是因為这样我们才有办法处理,如果你是要计算,两个句子之间的 BLEU Score,这一个 Loss,根本就没有办法做微分,那怎麼办呢
+
+这边就教大家一个口诀,遇到你在 Optimization 无法解决的问题,用 RL 硬 Train 一发就对了这样,遇到你无法 Optimize 的 Loss Function,把它当做是 RL 的 Reward,把你的 Decoder 当做是 Agent,它当作是 RL,Reinforcement Learning 的问题硬做
+
+其实也是有可能可以做的,**有人真的这样试过**,我把 Reference 列在这边给大家参考,当然这是一个比较难的做法,那并没有特别推荐你在作业裡面用这一招
+
+### Scheduled Sampling【定时采样】
+
+那我们要讲到,我们刚才反覆提到的问题了,就是**训练跟测试居然是不一致**的
+
+测试的时候,Decoder 看到的是自己的输出,所以测试的时候,Decoder 会看到一些错误的东西,但是在训练的时候,Decoder 看到的是完全正确的,那这个不一致的现象叫做,Exposure Bias
+
+![image-20210506170906750](https://gitee.com/unclestrong/deep-learning21_note/raw/master/imgbed/image-20210506170906750.png)
+
+假设 Decoder 在训练的时候,永远只看过正确的东西,那在测试的时候,你只要有一个错,那就会**一步错 步步错**,因為对 Decoder 来说,它从来没有看过错的东西,它看到错的东西会非常的惊奇,然后接下来它產生的结果可能都会错掉
+
+所以要怎麼解决这个问题呢
+
+有一个可以的思考的方向是,**给 Decoder 的输入加一些错误的东西**,就这麼直觉,你不要给 Decoder 都是正确的答案,偶尔给它一些错的东西,它反而会学得更好,这一招叫做,Scheduled Sampling,它不是那个 Schedule Learning Rate,刚才助教有讲 Schedule Learning Rate,那是另外一件事,不相干的事情,这个是 Scheduled Sampling
+
+![image-20210506171120911](https://gitee.com/unclestrong/deep-learning21_note/raw/master/imgbed/image-20210506171120911.png)
+
+Scheduled Sampling 其实很早就有了,这个是 15 年的 Paper,很早就有 Scheduled Sampling,在还没有 Transformer,只有 LSTM 的时候,就已经有 Scheduled Sampling,但是 Scheduled Sampling 这一招,它其实会伤害到,Transformer 的平行化的能力,那细节可以再自己去了解一下,所以对 Transformer 来说,它的 Scheduled Sampling,另有招数跟传统的招数,跟原来最早提在,这个 LSTM上被提出来的招数,也不太一样,那我把一些 Reference 的,列在这边给大家参考
+
+![image-20210506171143270](https://gitee.com/unclestrong/deep-learning21_note/raw/master/imgbed/image-20210506171143270.png)
+
+好 那以上我们就讲完了,Transformer 和种种的训练技巧,这个我们已经讲完了 Encoder,讲完了 Decoder,也讲完了它们中间的关係,也讲了怎麼训练,也讲了种种的 Tip
+
+ 
 
 ## ELMO
 

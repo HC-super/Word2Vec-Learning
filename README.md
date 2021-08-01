@@ -345,6 +345,8 @@ output layer and loss
 
 Self-Attention
 
+
+
 on the rellationship between SelfAttention and CNN<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr1upisvs0j30py0c83zm.jpg" alt="image-20210531182927927" style="zoom:33%;" />
 
 Self-Attention VS. RNN

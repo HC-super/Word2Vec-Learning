@@ -79,5 +79,26 @@ Mismatch
 
 Most HWs do not have this problem, except HW11.
 
-​              
+ 
 
+self- supervised learning 
+
+自监督模型使用另一种方式来进行模型监督，，例如一篇文章叫x，将x分为两部分，一部分叫x'，一部分叫x'‘
+
+将x'输入模型，模型输出y，由于self-supervised learning 不需要标签。
+
+![image-20210531133245185](https://i.loli.net/2021/07/31/KZ3eSUE2PqDmI8o.png)
+
+BERT是一个transformer的encoder。
+
+BERT是一个子监督模型，
+
+masked token prediction
+
+next sentence prediction
+
+下游任务：
+
+![image-20210531133245185](https://i.loli.net/2021/07/31/KZ3eSUE2PqDmI8o.png)
+
+BERT分化成各种任务的细胞，被称为微调（Fine-tune）在微调之前产生这个Bert的过程称为预训练。
